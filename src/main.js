@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * TEMPLATES: START
  */
@@ -411,22 +413,22 @@ function getLoadMoreButton() {
  */
 
 function render(container, template) {
-  container.insertAdjacentHTML('beforeend', template);
+  container.insertAdjacentHTML(`beforeend`, template);
 }
 
-render(document.getElementById('menu'), getMenuTemplate());
+render(document.getElementById(`menu`), getMenuTemplate());
 
-render(document.getElementById('search'), getSearchTemplate());
+render(document.getElementById(`search`), getSearchTemplate());
 
-render(document.getElementById('filter'), getFilterTemplate());
+render(document.getElementById(`filter`), getFilterTemplate());
 
-render(document.getElementById('task-board'), getEditTaskFormTemplate());
+render(document.getElementById(`task-board`), getEditTaskFormTemplate());
 
 const CARD_LIST_LENGTH = 3;
 
 for (let i = 0; i < CARD_LIST_LENGTH; i++) {
-  render(document.getElementById('task-board'), getCardTemplate());
+  render(document.getElementById(`task-board`), getCardTemplate());
 }
 
-render(document.getElementById('board'), getLoadMoreButton());
+render(document.getElementById(`board`), getLoadMoreButton());
 

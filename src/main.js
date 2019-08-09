@@ -1,50 +1,55 @@
 'use strict';
 
+const CARD_LIST_LENGTH = 3;
+
 /**
  * TEMPLATES: START
  */
 
-function getMenuTemplate() {
-  return `<input
-            type="radio"
-            name="control"
-            id="control__new-task"
-            class="control__input visually-hidden"
-          />
-          <label for="control__new-task" class="control__label control__label--new-task"
-            >+ ADD NEW TASK</label
-          >
-          <input
-            type="radio"
-            name="control"
-            id="control__task"
-            class="control__input visually-hidden"
-            checked
-          />
-          <label for="control__task" class="control__label">TASKS</label>
-          <input
-            type="radio"
-            name="control"
-            id="control__statistic"
-            class="control__input visually-hidden"
-          />
-          <label for="control__statistic" class="control__label"
-            >STATISTICS</label
-          >`;
-}
+const getMenuTemplate = () =>
+          `<section class="control__btn-wrap"> 
+            <input
+              type="radio"
+              name="control"
+              id="control__new-task"
+              class="control__input visually-hidden"
+            />
+            <label for="control__new-task" class="control__label control__label--new-task"
+              >+ ADD NEW TASK</label
+            >
+            <input
+              type="radio"
+              name="control"
+              id="control__task"
+              class="control__input visually-hidden"
+              checked
+            />
+            <label for="control__task" class="control__label">TASKS</label>
+            <input
+              type="radio"
+              name="control"
+              id="control__statistic"
+              class="control__input visually-hidden"
+            />
+            <label for="control__statistic" class="control__label"
+              >STATISTICS</label
+            >
+          </section>`;
 
-function getSearchTemplate() {
-  return `<input
+const getSearchTemplate = () =>
+      `<section class="main__search search container">
+        <input
           type="text"
           id="search__input"
           class="search__input"
           placeholder="START TYPING — SEARCH BY WORD, #HASHTAG OR DATE"
         />
-        <label class="visually-hidden" for="search__input">Search</label>`;
-}
+        <label class="visually-hidden" for="search__input">Search</label>
+      </section>`;
 
-function getFilterTemplate() {
-  return `<input
+const getFilterTemplate = () =>
+      `<section class="main__filter filter container">
+        <input
           type="radio"
           id="filter__all"
           class="filter__input visually-hidden"
@@ -109,11 +114,11 @@ function getFilterTemplate() {
         />
         <label for="filter__archive" class="filter__label"
           >Archive <span class="filter__archive-count">115</span></label
-        >`;
-}
+        >
+      </section>`;
 
-function getEditTaskFormTemplate() {
-  return `<article class="card card--edit card--black">
+const getEditTaskFormTemplate = () =>
+          `<article class="card card--edit card--black">
             <form class="card__form" method="get">
               <div class="card__inner">
                 <div class="card__control">
@@ -334,10 +339,9 @@ function getEditTaskFormTemplate() {
               </div>
             </form>
           </article>`;
-}
 
-function getCardTemplate() {
-  return `<article class="card card--black">
+const getCardTemplate = () =>
+  `<article class="card card--black">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -402,11 +406,22 @@ function getCardTemplate() {
               </div>
             </div>
           </article>`;
-}
 
-function getLoadMoreButton() {
-  return `<button class="load-more" type="button">load more</button>`;
-}
+const getLoadMoreButtonTemplate = () =>
+      `<button class="load-more" type="button">load more</button>`;
+
+const getBoardTemplate = () =>
+      `<section id="board" class="board container">
+        <div class="board__filter-list">
+          <a href="#" class="board__filter">SORT BY DEFAULT</a>
+          <a href="#" class="board__filter">SORT BY DATE up</a>
+          <a href="#" class="board__filter">SORT BY DATE down</a>
+        </div>
+
+        <div class="board__tasks">
+          <!-- Контент -->
+        </div>
+      </section>`;
 
 /**
  * TEMPLATES: END
@@ -416,19 +431,22 @@ function render(container, template) {
   container.insertAdjacentHTML(`beforeend`, template);
 }
 
-render(document.getElementById(`menu`), getMenuTemplate());
+render(document.querySelector(`.main__control`), getMenuTemplate());
 
-render(document.getElementById(`search`), getSearchTemplate());
+const mainElement = document.querySelector(`.main`);
 
-render(document.getElementById(`filter`), getFilterTemplate());
+render(mainElement, getSearchTemplate());
 
-render(document.getElementById(`task-board`), getEditTaskFormTemplate());
+render(mainElement, getFilterTemplate());
 
-const CARD_LIST_LENGTH = 3;
+render(mainElement, getBoardTemplate());
+
+const taskBoardElement = document.querySelector(`.board__tasks`);
+
+render(taskBoardElement, getEditTaskFormTemplate());
 
 for (let i = 0; i < CARD_LIST_LENGTH; i++) {
-  render(document.getElementById(`task-board`), getCardTemplate());
+  render(taskBoardElement, getCardTemplate());
 }
 
-render(document.getElementById(`board`), getLoadMoreButton());
-
+render(document.querySelector(`.board`), getLoadMoreButtonTemplate());

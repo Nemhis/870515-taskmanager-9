@@ -7,7 +7,7 @@ const CARD_LIST_LENGTH = 3;
  */
 
 const getMenuTemplate = () =>
-          `<section class="control__btn-wrap"> 
+  `<section class="control__btn-wrap"> 
             <input
               type="radio"
               name="control"
@@ -37,7 +37,7 @@ const getMenuTemplate = () =>
           </section>`;
 
 const getSearchTemplate = () =>
-      `<section class="main__search search container">
+  `<section class="main__search search container">
         <input
           type="text"
           id="search__input"
@@ -48,7 +48,7 @@ const getSearchTemplate = () =>
       </section>`;
 
 const getFilterTemplate = () =>
-      `<section class="main__filter filter container">
+  `<section class="main__filter filter container">
         <input
           type="radio"
           id="filter__all"
@@ -118,7 +118,7 @@ const getFilterTemplate = () =>
       </section>`;
 
 const getEditTaskFormTemplate = () =>
-          `<article class="card card--edit card--black">
+  `<article class="card card--edit card--black">
             <form class="card__form" method="get">
               <div class="card__inner">
                 <div class="card__control">
@@ -408,10 +408,10 @@ const getCardTemplate = () =>
           </article>`;
 
 const getLoadMoreButtonTemplate = () =>
-      `<button class="load-more" type="button">load more</button>`;
+  `<button class="load-more" type="button">load more</button>`;
 
 const getBoardTemplate = () =>
-      `<section id="board" class="board container">
+  `<section id="board" class="board container">
         <div class="board__filter-list">
           <a href="#" class="board__filter">SORT BY DEFAULT</a>
           <a href="#" class="board__filter">SORT BY DATE up</a>

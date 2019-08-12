@@ -1,10 +1,10 @@
-import {getMenuTemplate} from "./components/menu.js";
-import {getSearchTemplate} from "./components/search.js";
-import {getFilterTemplate} from "./components/filter.js";
-import {getEditTaskFormTemplate} from "./components/edit-task.js";
-import {getCardTemplate} from "./components/card.js";
-import {getLoadButtonTemplate} from "./components/load-button.js";
-import {getBoardTemplate} from "./components/board.js";
+import {getMenuTemplate} from './components/menu.js';
+import {getSearchTemplate} from './components/search.js';
+import {getFilterTemplate} from './components/filter.js';
+import {getEditTaskFormTemplate} from './components/edit-task.js';
+import {getCardTemplate} from './components/card.js';
+import {getLoadButtonTemplate} from './components/load-button.js';
+import {getBoardTemplate} from './components/board.js';
 
 const CARD_LIST_LENGTH = 3;
 

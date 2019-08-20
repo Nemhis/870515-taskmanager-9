@@ -1,3 +1,5 @@
+import {createTask} from './data.js';
+
 import {getMenuTemplate} from './components/menu.js';
 import {getSearchTemplate} from './components/search.js';
 import {getFilterTemplate} from './components/filter.js';
@@ -26,8 +28,10 @@ const taskBoardElement = document.querySelector(`.board__tasks`);
 
 render(taskBoardElement, getEditTaskFormTemplate());
 
-for (let i = 0; i < CARD_LIST_LENGTH; i++) {
-  render(taskBoardElement, getCardTemplate());
-}
+render(taskBoardElement, new Array(CARD_LIST_LENGTH)
+  .fill(``)
+  .map(createTask)
+  .map(getCardTemplate)
+  .join(``));
 
 render(document.querySelector(`.board`), getLoadButtonTemplate());

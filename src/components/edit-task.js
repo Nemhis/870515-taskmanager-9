@@ -1,5 +1,6 @@
-export const getEditTaskFormTemplate = () =>
-  `<article class="card card--edit card--black">
+export const getEditTaskFormTemplate = ({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) =>
+  `<article class="card card--edit card--${color} ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `
+card--repeat` : ``}">
             <form class="card__form" method="get">
               <div class="card__inner">
                 <div class="card__control">
@@ -15,7 +16,7 @@ export const getEditTaskFormTemplate = () =>
                 </div>
 
                 <div class="card__color-bar">
-                  <svg width="100%" height="10">
+                  <svg class="card__color-bar-wave" width="100%" height="10">
                     <use xlink:href="#wave"></use>
                   </svg>
                 </div>
@@ -26,7 +27,7 @@ export const getEditTaskFormTemplate = () =>
                       class="card__text"
                       placeholder="Start typing your text here..."
                       name="text"
-                    >This is example of new task, you can add picture, set date and time, add tags.</textarea>
+                    >${description}</textarea>
                   </label>
                 </div>
 
@@ -34,26 +35,32 @@ export const getEditTaskFormTemplate = () =>
                   <div class="card__details">
                     <div class="card__dates">
                       <button class="card__date-deadline-toggle" type="button">
-                        date: <span class="card__date-status">no</span>
+                        date: <span class="card__date-status">${dueDate ? `yes` : `no`}</span>
                       </button>
 
-                      <fieldset class="card__date-deadline" disabled>
+                      <fieldset class="card__date-deadline" ${dueDate ? `` : `disabled`}>
                         <label class="card__input-deadline-wrap">
                           <input
                             class="card__date"
                             type="text"
                             placeholder="23 September"
                             name="date"
+                            ${dueDate ? `value="` + new Date(dueDate).toDateString() + `"` : ``}
                           />
                         </label>
                       </fieldset>
 
                       <button class="card__repeat-toggle" type="button">
-                        repeat:<span class="card__repeat-status">no</span>
+                        repeat:
+                        <span class="card__repeat-status">
+                          ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `yes` : `no`}
+                        </span>
                       </button>
 
-                      <fieldset class="card__repeat-days" disabled>
+                      <fieldset class="card__repeat-days" ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `` : `disabled`}>
                         <div class="card__repeat-days-inner">
+                        
+                        
                           <input
                             class="visually-hidden card__repeat-day-input"
                             type="checkbox"

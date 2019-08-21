@@ -8,7 +8,7 @@ import {getCardTemplate} from './components/card.js';
 import {getLoadButtonTemplate} from './components/load-button.js';
 import {getBoardTemplate} from './components/board.js';
 
-const CARD_LIST_LENGTH = 3;
+const CARD_LIST_LENGTH = 8;
 
 function render(container, template) {
   container.insertAdjacentHTML(`beforeend`, template);
@@ -30,8 +30,8 @@ render(mainElement, getBoardTemplate());
 
 const taskBoardElement = document.querySelector(`.board__tasks`);
 
-render(taskBoardElement, getEditTaskFormTemplate());
+render(taskBoardElement, getEditTaskFormTemplate(tasks.slice(0, 1)[0]));
 
-render(taskBoardElement, tasks.map(getCardTemplate).join(``));
+render(taskBoardElement, tasks.slice(1).map(getCardTemplate).join(``));
 
 render(document.querySelector(`.board`), getLoadButtonTemplate());

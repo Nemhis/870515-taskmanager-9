@@ -1,3 +1,5 @@
+import {colors} from '../data.js';
+
 export const getEditTaskFormTemplate = ({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) =>
   `<article class="card card--edit card--${color} ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `
 card--repeat` : ``}">
@@ -59,87 +61,40 @@ card--repeat` : ``}">
 
                       <fieldset class="card__repeat-days" ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `` : `disabled`}>
                         <div class="card__repeat-days-inner">
-                        
-                        
-                          <input
+                        ${Object.keys(repeatingDays).map((day) =>
+                          `<input
                             class="visually-hidden card__repeat-day-input"
                             type="checkbox"
-                            id="repeat-mo-1"
+                            id="repeat-${day}-1"
                             name="repeat"
-                            value="mo"
+                            value="${day}"
+                            ${repeatingDays[day] === true ? 'checked' : ''}
                           />
-                          <label class="card__repeat-day" for="repeat-mo-1"
-                            >mo</label
-                          >
-                          <input
-                            class="visually-hidden card__repeat-day-input"
-                            type="checkbox"
-                            id="repeat-tu-1"
-                            name="repeat"
-                            value="tu"
-                            checked
-                          />
-                          <label class="card__repeat-day" for="repeat-tu-1"
-                            >tu</label
-                          >
-                          <input
-                            class="visually-hidden card__repeat-day-input"
-                            type="checkbox"
-                            id="repeat-we-1"
-                            name="repeat"
-                            value="we"
-                          />
-                          <label class="card__repeat-day" for="repeat-we-1"
-                            >we</label
-                          >
-                          <input
-                            class="visually-hidden card__repeat-day-input"
-                            type="checkbox"
-                            id="repeat-th-1"
-                            name="repeat"
-                            value="th"
-                          />
-                          <label class="card__repeat-day" for="repeat-th-1"
-                            >th</label
-                          >
-                          <input
-                            class="visually-hidden card__repeat-day-input"
-                            type="checkbox"
-                            id="repeat-fr-1"
-                            name="repeat"
-                            value="fr"
-                            checked
-                          />
-                          <label class="card__repeat-day" for="repeat-fr-1"
-                            >fr</label
-                          >
-                          <input
-                            class="visually-hidden card__repeat-day-input"
-                            type="checkbox"
-                            name="repeat"
-                            value="sa"
-                            id="repeat-sa-1"
-                          />
-                          <label class="card__repeat-day" for="repeat-sa-1"
-                            >sa</label
-                          >
-                          <input
-                            class="visually-hidden card__repeat-day-input"
-                            type="checkbox"
-                            id="repeat-su-1"
-                            name="repeat"
-                            value="su"
-                            checked
-                          />
-                          <label class="card__repeat-day" for="repeat-su-1"
-                            >su</label
-                          >
+                          <label class="card__repeat-day" for="repeat-${day}-1"
+                            >${day}</label
+                          >`).join(``)}
                         </div>
                       </fieldset>
                     </div>
 
                     <div class="card__hashtag">
-                      <div class="card__hashtag-list"></div>
+                      <div class="card__hashtag-list">
+                        ${Array.from(tags).map((tag) =>
+                        `<span class="card__hashtag-inner">
+                          <input
+                            type="hidden"
+                            name="hashtag"
+                            value="repeat"
+                            class="card__hashtag-hidden-input"
+                          />
+                          <p class="card__hashtag-name">
+                            #${tag}
+                          </p>
+                          <button type="button" class="card__hashtag-delete">
+                            delete
+                          </button>
+                        </span>`).join(``)}
+                      </div>
 
                       <label>
                         <input
@@ -155,67 +110,21 @@ card--repeat` : ``}">
                   <div class="card__colors-inner">
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
-                      <input
-                        type="radio"
-                        id="color-black-1"
-                        class="card__color-input card__color-input--black visually-hidden"
-                        name="color"
-                        value="black"
-                        checked
-                      />
-                      <label
-                        for="color-black-1"
-                        class="card__color card__color--black"
-                        >black</label
-                      >
-                      <input
-                        type="radio"
-                        id="color-yellow-1"
-                        class="card__color-input card__color-input--yellow visually-hidden"
-                        name="color"
-                        value="yellow"
-                      />
-                      <label
-                        for="color-yellow-1"
-                        class="card__color card__color--yellow"
-                        >yellow</label
-                      >
-                      <input
-                        type="radio"
-                        id="color-blue-1"
-                        class="card__color-input card__color-input--blue visually-hidden"
-                        name="color"
-                        value="blue"
-                      />
-                      <label
-                        for="color-blue-1"
-                        class="card__color card__color--blue"
-                        >blue</label
-                      >
-                      <input
-                        type="radio"
-                        id="color-green-1"
-                        class="card__color-input card__color-input--green visually-hidden"
-                        name="color"
-                        value="green"
-                      />
-                      <label
-                        for="color-green-1"
-                        class="card__color card__color--green"
-                        >green</label
-                      >
-                      <input
-                        type="radio"
-                        id="color-pink-1"
-                        class="card__color-input card__color-input--pink visually-hidden"
-                        name="color"
-                        value="pink"
-                      />
-                      <label
-                        for="color-pink-1"
-                        class="card__color card__color--pink"
-                        >pink</label
-                      >
+                      ${colors.map((existedColor) => 
+                        `<input
+                          type="radio"
+                          id="color-${existedColor}-1"
+                          class="card__color-input card__color-input--${existedColor} visually-hidden"
+                          name="color"
+                          value="${existedColor}"
+                          ${existedColor === color ? `checked` : ``}
+                        />
+                        <label
+                          for="color-${existedColor}-1"
+                          class="card__color card__color--${existedColor}"
+                          >${color}</label
+                        >`  
+                      ).join(``)}
                     </div>
                   </div>
                 </div>

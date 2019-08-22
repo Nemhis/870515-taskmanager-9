@@ -1,7 +1,7 @@
 export const getFilterTemplate = (filters) =>
   `<section class="main__filter filter container">
-        ${filters.map((filter, index) =>
-        `<input
+        ${filters.map((filter) =>
+    `<input
           type="radio"
           id="filter__${filter.title}"
           class="filter__input visually-hidden"

@@ -1,5 +1,5 @@
-export const getCardTemplate = ({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) =>
-  `<article class="card card--${color} ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `card--repeat` : ``}">
+export const getCardTemplate = ({description, dueDate, repeatingDays, tags, color}) =>
+  `<article class="card card--${color} ${Object.keys(repeatingDays).some((day) => repeatingDays[day]) ? `card--repeat` : ``}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -39,8 +39,8 @@ export const getCardTemplate = ({description, dueDate, repeatingDays, tags, colo
 
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        ${Array.from(tags).map((tag) => 
-                        `<span class="card__hashtag-inner">
+                        ${Array.from(tags).map((tag) =>
+    `<span class="card__hashtag-inner">
                           <span class="card__hashtag-name">
                             #${tag}
                           </span>

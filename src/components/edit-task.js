@@ -1,7 +1,7 @@
 import {colors} from '../data.js';
 
-export const getEditTaskFormTemplate = ({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) =>
-  `<article class="card card--edit card--${color} ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `
+export const getEditTaskFormTemplate = ({description, dueDate, repeatingDays, tags, color}) =>
+  `<article class="card card--edit card--${color} ${Object.keys(repeatingDays).some((day) => repeatingDays[day]) ? `
 card--repeat` : ``}">
             <form class="card__form" method="get">
               <div class="card__inner">
@@ -55,20 +55,20 @@ card--repeat` : ``}">
                       <button class="card__repeat-toggle" type="button">
                         repeat:
                         <span class="card__repeat-status">
-                          ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `yes` : `no`}
+                          ${Object.keys(repeatingDays).some((day) => repeatingDays[day]) ? `yes` : `no`}
                         </span>
                       </button>
 
-                      <fieldset class="card__repeat-days" ${Object.keys(repeatingDays).some(day => repeatingDays[day]) ? `` : `disabled`}>
+                      <fieldset class="card__repeat-days" ${Object.keys(repeatingDays).some((day) => repeatingDays[day]) ? `` : `disabled`}>
                         <div class="card__repeat-days-inner">
                         ${Object.keys(repeatingDays).map((day) =>
-                          `<input
+    `<input
                             class="visually-hidden card__repeat-day-input"
                             type="checkbox"
                             id="repeat-${day}-1"
                             name="repeat"
                             value="${day}"
-                            ${repeatingDays[day] === true ? 'checked' : ''}
+                            ${repeatingDays[day] === true ? `checked` : ``}
                           />
                           <label class="card__repeat-day" for="repeat-${day}-1"
                             >${day}</label
@@ -80,7 +80,7 @@ card--repeat` : ``}">
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
                         ${Array.from(tags).map((tag) =>
-                        `<span class="card__hashtag-inner">
+    `<span class="card__hashtag-inner">
                           <input
                             type="hidden"
                             name="hashtag"
@@ -110,8 +110,8 @@ card--repeat` : ``}">
                   <div class="card__colors-inner">
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
-                      ${colors.map((existedColor) => 
-                        `<input
+                      ${colors.map((existedColor) =>
+    `<input
                           type="radio"
                           id="color-${existedColor}-1"
                           class="card__color-input card__color-input--${existedColor} visually-hidden"
@@ -123,8 +123,8 @@ card--repeat` : ``}">
                           for="color-${existedColor}-1"
                           class="card__color card__color--${existedColor}"
                           >${color}</label
-                        >`  
-                      ).join(``)}
+                        >`
+  ).join(``)}
                     </div>
                   </div>
                 </div>

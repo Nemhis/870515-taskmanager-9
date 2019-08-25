@@ -1,3 +1,5 @@
+import {createTask, createFilters} from './data.js';
+
 import {getMenuTemplate} from './components/menu.js';
 import {getSearchTemplate} from './components/search.js';
 import {getFilterTemplate} from './components/filter.js';
@@ -6,7 +8,7 @@ import {getCardTemplate} from './components/card.js';
 import {getLoadButtonTemplate} from './components/load-button.js';
 import {getBoardTemplate} from './components/board.js';
 
-const CARD_LIST_LENGTH = 3;
+const CARD_LIST_LENGTH = 16;
 
 function render(container, template) {
   container.insertAdjacentHTML(`beforeend`, template);
@@ -18,16 +20,23 @@ const mainElement = document.querySelector(`.main`);
 
 render(mainElement, getSearchTemplate());
 
-render(mainElement, getFilterTemplate());
+const tasks = new Array(CARD_LIST_LENGTH)
+  .fill(``)
+  .map(createTask);
+
+render(mainElement, getFilterTemplate(createFilters(tasks)));
 
 render(mainElement, getBoardTemplate());
 
 const taskBoardElement = document.querySelector(`.board__tasks`);
 
-render(taskBoardElement, getEditTaskFormTemplate());
+render(taskBoardElement, getEditTaskFormTemplate(tasks.slice(0, 1)[0]));
 
-for (let i = 0; i < CARD_LIST_LENGTH; i++) {
-  render(taskBoardElement, getCardTemplate());
-}
+render(taskBoardElement, tasks.slice(1, 8).map(getCardTemplate).join(``));
 
 render(document.querySelector(`.board`), getLoadButtonTemplate());
+
+document.querySelector('.load-more').addEventListener('click', (event, element) => {
+  event.target.style.display = `none`;
+  render(taskBoardElement, tasks.slice(8, 16).map(getCardTemplate).join(``));
+});

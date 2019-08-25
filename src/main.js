@@ -24,6 +24,7 @@ const tasks = new Array(CARD_LIST_LENGTH)
   .fill(``)
   .map(createTask);
 
+console.log(createFilters(tasks));
 render(mainElement, getFilterTemplate(createFilters(tasks)));
 
 render(mainElement, getBoardTemplate());

@@ -1,7 +1,25 @@
-export const getFilterTemplate = (filters) =>
-  `<section class="main__filter filter container">
-        ${filters.map((filter) =>
-    `<input
+import {createElement} from '../utils.js';
+
+export class Filter {
+  constructor(filters) {
+    this._filters = filters;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  getRemoveElement() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return `<section class="main__filter filter container">
+        ${this._filters.map((filter) => `<input
           type="radio"
           id="filter__${filter.title}"
           class="filter__input visually-hidden"
@@ -13,3 +31,5 @@ export const getFilterTemplate = (filters) =>
         >
         `).join(``)}
       </section>`;
+  }
+}

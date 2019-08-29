@@ -42,6 +42,11 @@ const renderTask = (taskMock) => {
     }
   };
 
+  const saveFormHandler = () => {
+    taskBoardElement.replaceChild(task.getElement(), taskEdit.getElement());
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  };
+
   task.getElement()
     .querySelector(`.card__btn--edit`)
     .addEventListener(`click`, () => {
@@ -61,17 +66,11 @@ const renderTask = (taskMock) => {
 
   taskEdit.getElement()
     .querySelector(`.card__save`)
-    .addEventListener(`click`, () => {
-      taskBoardElement.replaceChild(task.getElement(), taskEdit.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
+    .addEventListener(`click`, saveFormHandler);
 
   taskEdit.getElement()
     .querySelector(`.card__form`)
-    .addEventListener(`submit`, () => {
-      taskBoardElement.replaceChild(task.getElement(), taskEdit.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
+    .addEventListener(`submit`, saveFormHandler);
 
   render(taskBoardElement, task.getElement(), Position.BEFOREEND);
 };

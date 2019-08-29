@@ -1,5 +1,5 @@
 import {createTask, createFilters} from './data.js';
-import {Position, render, unrender} from './utils.js';
+import {Position, render} from './utils.js';
 
 import Menu from './components/menu.js';
 import Search from './components/search.js';
@@ -62,6 +62,13 @@ const renderTask = (taskMock) => {
   taskEdit.getElement()
     .querySelector(`.card__save`)
     .addEventListener(`click`, () => {
+      taskBoardElement.replaceChild(task.getElement(), taskEdit.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+  taskEdit.getElement()
+    .querySelector(`.card__form`)
+    .addEventListener(`submit`, () => {
       taskBoardElement.replaceChild(task.getElement(), taskEdit.getElement());
       document.removeEventListener(`keydown`, onEscKeyDown);
     });

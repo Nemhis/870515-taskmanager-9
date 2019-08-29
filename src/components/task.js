@@ -64,7 +64,7 @@ export default class Task {
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
                         ${Array.from(this._tags).map((tag) =>
-      `<span class="card__hashtag-inner">
+    `<span class="card__hashtag-inner">
                           <span class="card__hashtag-name">
                             #${tag}
                           </span>

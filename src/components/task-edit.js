@@ -79,7 +79,7 @@ card--repeat` : ``}">
                       <fieldset class="card__repeat-days" ${Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]) ? `` : `disabled`}>
                         <div class="card__repeat-days-inner">
                         ${Object.keys(this._repeatingDays).map((day) =>
-      `<input
+    `<input
                             class="visually-hidden card__repeat-day-input"
                             type="checkbox"
                             id="repeat-${day}-1"
@@ -96,7 +96,7 @@ card--repeat` : ``}">
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
                         ${Array.from(this._tags).map((tag) =>
-      `<span class="card__hashtag-inner">
+    `<span class="card__hashtag-inner">
                           <input
                             type="hidden"
                             name="hashtag"
@@ -125,7 +125,7 @@ card--repeat` : ``}">
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
                       ${colors.map((existedColor) =>
-      `<input
+    `<input
                           type="radio"
                           id="color-${existedColor}-1"
                           class="card__color-input card__color-input--${existedColor} visually-hidden"

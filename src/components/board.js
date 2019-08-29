@@ -1,6 +1,6 @@
 import {createElement} from '../utils.js';
 
-export class Board {
+export default class Board {
   constructor() {}
 
   getElement() {

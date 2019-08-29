@@ -1,6 +1,6 @@
 import {createElement} from '../utils.js';
 
-export class LoadButton {
+export default class LoadButton {
   constructor() {}
 
   getElement() {

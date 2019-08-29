@@ -1,6 +1,6 @@
 import {createElement} from '../utils.js';
 
-export class Task {
+export default class Task {
   constructor({description, dueDate, tags, color, repeatingDays}) {
     this._description = description;
     this._dueDate = new Date(dueDate);

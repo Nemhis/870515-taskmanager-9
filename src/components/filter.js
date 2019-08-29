@@ -1,6 +1,6 @@
 import {createElement} from '../utils.js';
 
-export class Filter {
+export default class Filter {
   constructor(filters) {
     this._filters = filters;
   }

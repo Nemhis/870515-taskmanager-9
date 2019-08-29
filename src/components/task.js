@@ -23,7 +23,7 @@ export default class Task {
   }
 
   getTemplate() {
-    return `<article class="card card--${this._color} ${Object.values(this._repeatingDays).some((it) => it === true) ? `card--repeat` : ``}">
+    return `<article class="card card--${this._color} ${Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]) ? `card--repeat` : ``}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -56,20 +56,19 @@ export default class Task {
                     <div class="card__dates">
                       <div class="card__date-deadline">
                         <p class="card__input-deadline-wrap">
-                          <span class="card__date">${this._dueDate.toDateString()}</span>
-                          <span class="card__time">${this._dueDate.getHours()}:${this._dueDate.getMinutes()}</span>
+                          <span class="card__date">${new Date(this._dueDate).toDateString()}</span>
                         </p>
                       </div>
                     </div>
 
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        ${(Array.from(this._tags).map((tag) => (`
-                          <span class="card__hashtag-inner">
-                          <input type="hidden" name="hashtag" value="${tag}" class="card__hashtag-hidden-input" />
-                          <button type="button" class="card__hashtag-name">#${tag}</button>
-                          <button type="button" class="card__hashtag-delete">delete</button>
-                        </span>`.trim()))).join(``)}
+                        ${Array.from(this._tags).map((tag) =>
+      `<span class="card__hashtag-inner">
+                          <span class="card__hashtag-name">
+                            #${tag}
+                          </span>
+                        </span>`).join(``)}
                       </div>
                     </div>
                   </div>

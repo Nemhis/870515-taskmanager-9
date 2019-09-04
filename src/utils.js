@@ -5,7 +5,7 @@ export const Position = {
 
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
+  newElement.insertAdjacentHTML(`afterbegin`, template);
   return newElement.firstChild;
 };
 

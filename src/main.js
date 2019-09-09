@@ -1,5 +1,5 @@
 import {createTask, createFilters} from './data.js';
-import {Position, render} from './utils.js';
+import {Position, render, isEscBtn} from './utils.js';
 
 import Menu from './components/menu.js';
 import Search from './components/search.js';
@@ -36,7 +36,7 @@ const renderTask = (taskMock) => {
   const taskEdit = new TaskEdit(taskMock);
 
   const onEscKeyDown = (evt) => {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
+    if (isEscBtn(evt.key)) {
       taskBoardElement.replaceChild(task.getElement(), taskEdit.getElement());
       document.removeEventListener(`keydown`, onEscKeyDown);
     }

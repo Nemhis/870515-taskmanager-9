@@ -26,3 +26,5 @@ export const unrender = (element) => {
     element.remove();
   }
 };
+
+export const isEscBtn = (key) => key === `Escape` || key === `Esc`;

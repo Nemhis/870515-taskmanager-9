@@ -1,41 +1,39 @@
-import Board from "./components/board.js";
-import Task from "./components/task.js";
-import TaskEdit from "./components/task-edit.js";
-import TaskList from "./components/task-list.js";
+import Board from './components/board.js';
+import Task from './components/task.js';
+import TaskEdit from './components/task-edit.js';
+import TaskList from './components/task-list.js';
+import LoadButton from './components/load-button';
+import Sort from './components/sort';
 
-import {isEscBtn, Position, render} from "./utils";
-import Menu from "./components/menu";
-import Search from "./components/search";
-import Filter from "./components/filter";
-import LoadButton from "./components/load-button";
-
-import {createFilters} from "./data";
+import {isEscBtn, Position, render} from './utils';
 
 export default class BoardController {
   constructor(container, tasks) {
     this._container = container;
     this._tasks = tasks;
     this._board = new Board();
+    this._sort = new Sort();
     this._taskList = new TaskList();
   }
 
   init() {
-    // MENU
-    render(document.querySelector(`.main__control`), (new Menu()).getElement(), Position.BEFOREEND);
-    // SEARCH
-    render(this._container, (new Search()).getElement(), Position.BEFOREEND);
-    // FILTER
-    render(this._container, (new Filter(createFilters(this._tasks))).getElement(), Position.BEFOREEND);
     // TASK BOARD
     render(this._container, this._board.getElement(), Position.BEFOREEND);
+    // SORT
+    render(this._board.getElement(), this._sort.getElement(), Position.BEFOREEND);
     // TASK LIST
     render(this._board.getElement(), this._taskList.getElement(), Position.BEFOREEND);
     // TASK
-    this._tasks.slice(0, 8).forEach((taskMock) => this._renderTask(taskMock));
+    this._tasks.forEach((taskMock) => this._renderTask(taskMock));
     // LOAD MORE BUTTON
     render(this._board.getElement(), (new LoadButton()).getElement(), Position.BEFOREEND);
 
-    document.querySelector('.load-more').addEventListener('click', (event) => this._onLoadMoreClick(event));
+    document
+      .querySelector('.load-more')
+      .addEventListener('click', (event) => this._onLoadMoreClick(event));
+
+    this._sort.getElement()
+      .addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
   }
 
   _renderTask(taskMock) {
@@ -85,6 +83,32 @@ export default class BoardController {
 
   _onLoadMoreClick(event) {
     event.target.style.display = `none`;
-    this._tasks.slice(8).forEach((taskMock) => this._renderTask(taskMock));
+    // TODO: нужен метод для загрузки и обработки задач
+    // taskMocks.slice(8).forEach((taskMock) => this._renderTask(taskMock));
+  }
+
+  _onSortLinkClick(evt) {
+    evt.preventDefault();
+
+    if (evt.target.tagName !== `A`) {
+      return;
+    }
+
+    // TODO: для удаления всего html в контейнере использовать 'innerHTML' ?
+    this._taskList.getElement().innerHTML = ``;
+
+    switch (evt.target.dataset.sortType) {
+      case `date-up`:
+        const sortedByDateUpTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+        sortedByDateUpTasks.forEach((taskMock) => this._renderTask(taskMock));
+        break;
+      case `date-down`:
+        const sortedByDateDownTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+        sortedByDateDownTasks.forEach((taskMock) => this._renderTask(taskMock));
+        break;
+      case `default`:
+        this._tasks.forEach((taskMock) => this._renderTask(taskMock));
+        break;
+    }
   }
 }

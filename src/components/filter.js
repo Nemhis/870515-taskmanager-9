@@ -1,5 +1,4 @@
-import {createElement} from '../utils.js';
-import AbstractComponent from "./abstract-component";
+import AbstractComponent from './abstract-component';
 
 export default class Filter extends AbstractComponent {
   constructor(filters) {

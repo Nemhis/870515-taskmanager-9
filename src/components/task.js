@@ -1,5 +1,4 @@
-import {createElement} from '../utils.js';
-import AbstractComponent from "./abstract-component";
+import AbstractComponent from './abstract-component';
 
 export default class Task extends AbstractComponent {
   constructor({description, dueDate, tags, color, repeatingDays}) {

@@ -1,5 +1,22 @@
-export const getSearchTemplate = () =>
-  `<section class="main__search search container">
+import {createElement} from '../utils.js';
+
+export default class Search {
+  constructor() {}
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  getRemoveElement() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return `<section class="main__search search container">
         <input
           type="text"
           id="search__input"
@@ -8,3 +25,5 @@ export const getSearchTemplate = () =>
         />
         <label class="visually-hidden" for="search__input">Search</label>
       </section>`;
+  }
+}

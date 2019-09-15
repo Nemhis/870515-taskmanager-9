@@ -1,9 +1,8 @@
 import AbstractComponent from './abstract-component';
 
 export default class Task extends AbstractComponent {
-  constructor({id, description, dueDate, tags, color, repeatingDays}) {
+  constructor({description, dueDate, tags, color, repeatingDays}) {
     super();
-    this._id = id;
     this._description = description;
     this._dueDate = new Date(dueDate);
     this._tags = tags;
@@ -24,7 +23,7 @@ export default class Task extends AbstractComponent {
                   </button>
                   <button
                     type="button"
-                    class="card__btn card__btn--favorites card__btn--disabled"
+                    class="card__btn card__btn--favorites"
                   >
                     favorites
                   </button>

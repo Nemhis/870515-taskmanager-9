@@ -60,8 +60,8 @@ export default class BoardController {
     this._subscriptions.push(taskController.setDefaultView.bind(taskController));
   }
 
-  _onDataChange(newData, oldData) {
-    this._tasks[this._tasks.findIndex((it) => it.id === oldData.id)] = newData;
+  _onDataChange(newData, id) {
+    this._tasks[this._tasks.findIndex((it) => it.id === id)] = newData;
     this._renderBoard();
   }
 

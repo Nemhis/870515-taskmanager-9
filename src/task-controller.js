@@ -26,8 +26,18 @@ export default class TaskController {
 
     const saveFormHandler = (event) => {
       event.preventDefault();
-      this._onDataChange(this._collectFormData(), this._data);
+      this._onDataChange(this._collectFormData(), this._data.id);
       document.removeEventListener(`keydown`, onEscKeyDown);
+    };
+
+    const onAddToArchive = () => {
+      this._data.isArchive = !this._data.isArchive;
+      this._onDataChange(this._data, this._data.id);
+    };
+
+    const onAddToFavorite = () => {
+      this._data.isFavorite = !this._data.isFavorite;
+      this._onDataChange(this._data, this._data.id);
     };
 
     this._task.getElement()
@@ -37,6 +47,22 @@ export default class TaskController {
         this._container.replaceChild(this._taskEdit.getElement(), this._task.getElement());
         document.addEventListener(`keydown`, onEscKeyDown);
       });
+
+    this._task.getElement()
+      .querySelector(`.card__btn--archive`)
+      .addEventListener(`click`, onAddToArchive);
+
+    this._task.getElement()
+      .querySelector(`.card__btn--favorites`)
+      .addEventListener(`click`, onAddToFavorite);
+
+    this._taskEdit.getElement()
+      .querySelector(`.card__btn--archive`)
+      .addEventListener(`click`, onAddToArchive);
+
+    this._taskEdit.getElement()
+      .querySelector(`.card__btn--favorites`)
+      .addEventListener(`click`, onAddToFavorite);
 
     this._taskEdit.getElement().querySelector(`textarea`)
       .addEventListener(`focus`, () => {
@@ -61,9 +87,7 @@ export default class TaskController {
 
   _collectFormData() {
     const formData = new FormData(this._taskEdit.getElement().querySelector(`.card__form`));
-
-    return {
-      id: Number(formData.get(`id`)),
+    const newData = {
       description: formData.get(`description`),
       color: formData.get(`color`),
       tags: new Set(formData.getAll(`hashtag`)),
@@ -81,6 +105,8 @@ export default class TaskController {
         'su': false,
       })
     };
+
+    return Object.assign(this._data, newData);
   }
 
   setDefaultView() {

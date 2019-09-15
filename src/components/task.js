@@ -1,8 +1,9 @@
 import AbstractComponent from './abstract-component';
 
 export default class Task extends AbstractComponent {
-  constructor({description, dueDate, tags, color, repeatingDays}) {
+  constructor({id, description, dueDate, tags, color, repeatingDays}) {
     super();
+    this._id = id;
     this._description = description;
     this._dueDate = new Date(dueDate);
     this._tags = tags;

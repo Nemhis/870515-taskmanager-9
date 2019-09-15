@@ -1,13 +1,12 @@
 import Board from "./components/board.js";
-import Task from "./components/task.js";
-import TaskEdit from "./components/task-edit.js";
 import TaskList from "./components/task-list.js";
 
-import {isEscBtn, Position, render} from "./utils";
+import {Position, render, unrender} from "./utils";
 import Menu from "./components/menu";
 import Search from "./components/search";
 import Filter from "./components/filter";
 import LoadButton from "./components/load-button";
+import TaskController from "./task-controller";
 
 import {createFilters} from "./data";
 
@@ -17,6 +16,7 @@ export default class BoardController {
     this._tasks = tasks;
     this._board = new Board();
     this._taskList = new TaskList();
+    this._subscriptions = [];
   }
 
   init() {
@@ -32,56 +32,42 @@ export default class BoardController {
     render(this._board.getElement(), this._taskList.getElement(), Position.BEFOREEND);
     // TASK
     this._tasks.slice(0, 8).forEach((taskMock) => this._renderTask(taskMock));
-    // LOAD MORE BUTTON
-    render(this._board.getElement(), (new LoadButton()).getElement(), Position.BEFOREEND);
+    // TODO: пока нет механизма рендера только одной карточки вместо всей
+    //  доски, то лучше пока не рендерить кнопки загрузки доп. карточек
 
-    document.querySelector('.load-more').addEventListener('click', (event) => this._onLoadMoreClick(event));
+    // LOAD MORE BUTTON
+    // render(this._board.getElement(), (new LoadButton()).getElement(), Position.BEFOREEND);
+
+    // document.querySelector('.load-more').addEventListener('click', (event) => this._onLoadMoreClick(event));
   }
 
-  _renderTask(taskMock) {
-    const task = new Task(taskMock);
-    const taskEdit = new TaskEdit(taskMock);
-    const taskListElement = this._taskList.getElement();
+  _renderBoard() {
+    unrender(this._taskList.getElement());
 
-    const onEscKeyDown = (evt) => {
-      if (isEscBtn(evt.key)) {
-        taskListElement.replaceChild(task.getElement(), taskEdit.getElement());
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+    this._taskList.removeElement();
+    render(this._board.getElement(), this._taskList.getElement(), Position.BEFOREEND);
+    this._tasks.slice(0, 8).forEach((taskMock) => this._renderTask(taskMock));
+  }
 
-    const saveFormHandler = () => {
-      taskListElement.replaceChild(task.getElement(), taskEdit.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    };
+  _renderTask(task) {
+    const taskController = new TaskController(
+      this._taskList.getElement(),
+      task,
+      this._onDataChange.bind(this),
+      this._onChangeView.bind(this)
+    );
 
-    task.getElement()
-      .querySelector(`.card__btn--edit`)
-      .addEventListener(`click`, () => {
-        taskListElement.replaceChild(taskEdit.getElement(), task.getElement());
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
+    this._subscriptions.push(taskController.setDefaultView.bind(taskController));
+  }
 
-    taskEdit.getElement().querySelector(`textarea`)
-      .addEventListener(`focus`, () => {
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
+  _onDataChange(newData, oldData) {
+    this._tasks[this._tasks.findIndex((it) => it.id === oldData.id)] = newData;
+    this._renderBoard();
+  }
 
-    taskEdit.getElement().querySelector(`textarea`)
-      .addEventListener(`blur`, () => {
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
-
-    taskEdit.getElement()
-      .querySelector(`.card__save`)
-      .addEventListener(`click`, saveFormHandler);
-
-    taskEdit.getElement()
-      .querySelector(`.card__form`)
-      .addEventListener(`submit`, saveFormHandler);
-
-    render(taskListElement, task.getElement(), Position.BEFOREEND);
-  };
+  _onChangeView() {
+    this._subscriptions.forEach((it) => it());
+  }
 
   _onLoadMoreClick(event) {
     event.target.style.display = `none`;

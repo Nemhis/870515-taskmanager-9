@@ -2,8 +2,9 @@ import {colors} from "../data.js";
 import AbstractComponent from "./abstract-component";
 
 export default class TaskEdit extends AbstractComponent {
-  constructor({description, dueDate, tags, color, repeatingDays}) {
+  constructor({id, description, dueDate, tags, color, repeatingDays}) {
     super();
+    this._id = id;
     this._description = description;
     this._dueDate = new Date(dueDate);
     this._tags = tags;
@@ -15,6 +16,7 @@ export default class TaskEdit extends AbstractComponent {
     return `<article class="card card--edit card--${this._color} ${Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]) ? `
 card--repeat` : ``}">
             <form class="card__form" method="get">
+              <input type="hidden" name="id" value="${this._id}">
               <div class="card__inner">
                 <div class="card__control">
                   <button type="button" class="card__btn card__btn--archive">
@@ -37,7 +39,7 @@ card--repeat` : ``}">
                     <textarea
                       class="card__text"
                       placeholder="Start typing your text here..."
-                      name="text"
+                      name="description"
                     >${this._description}</textarea>
                   </label>
                 </div>

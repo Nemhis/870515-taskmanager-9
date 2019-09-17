@@ -1,15 +1,15 @@
-import Board from "./components/board.js";
-import TaskList from "./components/task-list.js";
+import Board from './components/board.js';
+import TaskList from './components/task-list.js';
 
-import {Position, render, unrender} from "./utils";
-import Menu from "./components/menu";
-import Search from "./components/search";
-import Filter from "./components/filter";
-import LoadButton from "./components/load-button";
-import TaskController from "./task-controller";
+import {Position, render, unrender} from './utils';
+import Menu from './components/menu';
+import Search from './components/search';
+import Filter from './components/filter';
+import LoadButton from './components/load-button';
+import TaskController from './task-controller';
 import Sort from './components/sort';
 
-import {createFilters} from "./data";
+import {createFilters} from './data';
 
 export default class BoardController {
   constructor(container, tasks) {
@@ -22,12 +22,6 @@ export default class BoardController {
   }
 
   init() {
-    // MENU
-    render(document.querySelector(`.main__control`), (new Menu()).getElement(), Position.BEFOREEND);
-    // SEARCH
-    render(this._container, (new Search()).getElement(), Position.BEFOREEND);
-    // FILTER
-    render(this._container, (new Filter(createFilters(this._tasks))).getElement(), Position.BEFOREEND);
     // TASK BOARD
     render(this._container, this._board.getElement(), Position.BEFOREEND);
     // SORT
@@ -88,21 +82,18 @@ export default class BoardController {
       return;
     }
 
-    // TODO: для удаления всего html в контейнере использовать 'innerHTML' ?
-    this._taskList.getElement().innerHTML = ``;
-
     switch (evt.target.dataset.sortType) {
       case `date-up`:
-        const sortedByDateUpTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
-        sortedByDateUpTasks.forEach((taskMock) => this._renderTask(taskMock));
+        this._tasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
         break;
       case `date-down`:
-        const sortedByDateDownTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
-        sortedByDateDownTasks.forEach((taskMock) => this._renderTask(taskMock));
+        this._tasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
         break;
       case `default`:
         this._tasks.forEach((taskMock) => this._renderTask(taskMock));
         break;
     }
+
+    this._renderBoard();
   }
 }

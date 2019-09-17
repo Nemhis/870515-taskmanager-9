@@ -20,14 +20,16 @@ export default class TaskController {
     const onEscKeyDown = (evt) => {
       if (isEscBtn(evt.key)) {
         this._container.replaceChild(this._task.getElement(), this._taskEdit.getElement());
+        // Сбрасываем данные, потому что пользователь их не сохранил
+        this._taskEdit = new TaskEdit(this._data);
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
 
-    const saveFormHandler = (event) => {
-      event.preventDefault();
-      this._onDataChange(this._collectFormData(), this._data.id);
+    const saveFormHandler = () => {
+      debugger;
       document.removeEventListener(`keydown`, onEscKeyDown);
+      this._onDataChange(this._collectFormData(), this._data.id);
     };
 
     const onAddToArchive = () => {
@@ -44,8 +46,8 @@ export default class TaskController {
       .querySelector(`.card__btn--edit`)
       .addEventListener(`click`, () => {
         this._onChangeView();
-        this._container.replaceChild(this._taskEdit.getElement(), this._task.getElement());
         document.addEventListener(`keydown`, onEscKeyDown);
+        this._container.replaceChild(this._taskEdit.getElement(), this._task.getElement());
       });
 
     this._task.getElement()
@@ -74,13 +76,25 @@ export default class TaskController {
         document.addEventListener(`keydown`, onEscKeyDown);
       });
 
-    this._taskEdit.getElement()
-      .querySelector(`.card__save`)
-      .addEventListener(`click`, saveFormHandler);
+    const submitButton = this._taskEdit.getElement().querySelector(`.card__save`);
+    const form = this._taskEdit.getElement().querySelector(`.card__form`);
+    form.addEventListener(`submit`, (evt) => {evt.preventDefault();});
+    submitButton.addEventListener(`click`, saveFormHandler);
+    form.addEventListener(`submit`, saveFormHandler);
 
-    this._taskEdit.getElement()
-      .querySelector(`.card__form`)
-      .addEventListener(`submit`, saveFormHandler);
+    form
+      .querySelector(`.card__hashtag-input`)
+      .addEventListener(`focus`, () => {
+        form.removeEventListener(`submit`, saveFormHandler);
+        submitButton.removeEventListener(`click`, saveFormHandler);
+    });
+
+    form
+      .querySelector(`.card__hashtag-input`)
+      .addEventListener(`blur`, () => {
+        form.addEventListener(`submit`, saveFormHandler);
+        submitButton.addEventListener(`click`, saveFormHandler);
+      });
 
     render(this._container, this._task.getElement(), Position.BEFOREEND);
   };

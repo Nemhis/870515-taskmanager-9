@@ -1,5 +1,6 @@
 import {colors} from "../data.js";
 import AbstractComponent from "./abstract-component";
+import {isEnterBtn, render, Position} from "../utils";
 
 export default class TaskEdit extends AbstractComponent {
   constructor({description, dueDate, tags, color, repeatingDays}) {
@@ -9,11 +10,125 @@ export default class TaskEdit extends AbstractComponent {
     this._tags = tags;
     this._color = color;
     this._repeatingDays = repeatingDays;
+
+    this._isRepeat = Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]);
+
+    this.setListeners();
+  }
+
+  setListeners() {
+    const element = this.getElement();
+
+    // Date
+    element
+      .querySelector('.card__date-deadline-toggle')
+      .addEventListener('click', () => {
+        this._dueDate = this._dueDate ? null : new Date();
+        const statusEl = element.querySelector('.card__date-status');
+        statusEl.firstChild.remove();
+        statusEl.append(this._dueDate ? `yes` : `no`);
+
+        if (this._dueDate) {
+          element.querySelector('.card__date-deadline').removeAttribute(`disabled`);
+        } else {
+          element.querySelector('.card__date-deadline').setAttribute(`disabled`, `disabled`);
+          element.querySelector('.card__date').setAttribute(`value`, new Date().toDateString());
+        }
+      });
+
+    // Repeat
+    element
+      .querySelector(`.card__repeat-toggle`)
+      .addEventListener('click', () => {
+        this._isRepeat = !this._isRepeat;
+        const statusEl = element.querySelector(`.card__repeat-status`);
+        statusEl.firstChild.remove();
+        statusEl.append(this._isRepeat ? `yes` : `no`);
+
+        const fieldset = element.querySelector(`.card__repeat-days`);
+
+        if (this._isRepeat) {
+          fieldset.removeAttribute(`disabled`);
+        } else {
+          fieldset.setAttribute(`disabled`, `disabled`);
+        }
+
+        Array.from(fieldset.querySelectorAll(`.card__repeat-day-input`))
+          .forEach((input) => {
+            input.removeAttribute('checked');
+          });
+
+        Object.keys(this._repeatingDays).forEach((day) => {
+          this._repeatingDays[day] = false;
+        });
+      });
+
+    // Colors
+    element.addEventListener(`click`, (event) => {
+      const colorLabel = event.target;
+
+      if (!colorLabel.classList.contains(`card__color`)) return;
+
+      element.classList.remove(`card--${this._color}`);
+      this._color = element.querySelector(`#${colorLabel.getAttribute(`for`)}`).value;
+      element.classList.add(`card--${this._color}`);
+    });
+
+    // Tags
+    element.addEventListener(`click`, (event) => {
+      const clearTagBtn = event.target;
+
+      if (!clearTagBtn.classList.contains(`card__hashtag-delete`)) return;
+
+      const tagInput = clearTagBtn.parentNode.querySelector(`.card__hashtag-hidden-input`);
+      this._tags.delete(tagInput.value);
+      clearTagBtn.parentNode.remove();
+    });
+
+    const hashTagTextInput = element.querySelector(`.card__hashtag-input`);
+
+    const onEnter = (event) => {
+      if (!isEnterBtn(event.key)) return;
+
+      let newTag = String(hashTagTextInput.value).trim();
+
+      if (newTag.length) {
+        this._tags.add(newTag);
+        element.querySelector(`.card__hashtag-list`).insertAdjacentHTML(`beforeend`, this._getTagTemplate(newTag));
+        hashTagTextInput.value = ``;
+      }
+    };
+
+    hashTagTextInput
+      .addEventListener(`focus`, () => {
+        document.addEventListener(`keydown`, onEnter);
+      });
+
+    hashTagTextInput
+      .addEventListener(`blur`, () => {
+        document.removeEventListener(`keydown`, onEnter);
+      });
+  }
+
+  _getTagTemplate(tag) {
+    return `<span class="card__hashtag-inner">
+                          <input
+                            type="hidden"
+                            name="hashtag"
+                            value="${tag}"
+                            class="card__hashtag-hidden-input"
+                          />
+                          <p class="card__hashtag-name">
+                            #${tag}
+                          </p>
+                          <button type="button" class="card__hashtag-delete">
+                            delete
+                          </button>
+                        </span>`;
   }
 
   getTemplate() {
-    return `<article class="card card--edit card--${this._color} ${Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]) ? `
-card--repeat` : ``}">
+    return `<article class="card card--edit card--${this._color} ${this._isRepeat ? `card--repeat` : ``}">
             <form class="card__form" method="get">
               <div class="card__inner">
                 <div class="card__control">
@@ -61,13 +176,13 @@ card--repeat` : ``}">
                       <button class="card__repeat-toggle" type="button">
                         repeat:
                         <span class="card__repeat-status">
-                          ${Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]) ? `yes` : `no`}
+                          ${this._isRepeat ? `yes` : `no`}
                         </span>
                       </button>
-                      <fieldset class="card__repeat-days" ${Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]) ? `` : `disabled`}>
+                      <fieldset class="card__repeat-days" ${this._isRepeat ? `` : `disabled`}>
                         <div class="card__repeat-days-inner">
                         ${Object.keys(this._repeatingDays).map((day) =>
-    `<input
+      `<input
                             class="visually-hidden card__repeat-day-input"
                             type="checkbox"
                             id="repeat-${day}-1"
@@ -83,21 +198,7 @@ card--repeat` : ``}">
                     </div>
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        ${Array.from(this._tags).map((tag) =>
-    `<span class="card__hashtag-inner">
-                          <input
-                            type="hidden"
-                            name="hashtag"
-                            value="repeat"
-                            class="card__hashtag-hidden-input"
-                          />
-                          <p class="card__hashtag-name">
-                            #${tag}
-                          </p>
-                          <button type="button" class="card__hashtag-delete">
-                            delete
-                          </button>
-                        </span>`).join(``)}
+                        ${Array.from(this._tags).map((tag) => this._getTagTemplate(tag)).join(``)}
                       </div>
                       <label>
                         <input
@@ -113,7 +214,7 @@ card--repeat` : ``}">
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
                       ${colors.map((existedColor) =>
-    `<input
+      `<input
                           type="radio"
                           id="color-${existedColor}-1"
                           class="card__color-input card__color-input--${existedColor} visually-hidden"

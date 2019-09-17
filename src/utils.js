@@ -28,3 +28,5 @@ export const unrender = (element) => {
 };
 
 export const isEscBtn = (key) => key === `Escape` || key === `Esc`;
+
+export const isEnterBtn = (key) => key === `Enter`;

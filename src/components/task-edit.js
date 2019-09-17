@@ -1,6 +1,10 @@
-import {colors} from "../data.js";
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/themes/light.css';
+
 import AbstractComponent from "./abstract-component";
-import {isEnterBtn, render, Position} from "../utils";
+
+import {colors} from "../data.js";
+import {isEnterBtn} from "../utils";
 
 export default class TaskEdit extends AbstractComponent {
   constructor({description, dueDate, tags, color, repeatingDays}) {
@@ -14,6 +18,7 @@ export default class TaskEdit extends AbstractComponent {
     this._isRepeat = Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]);
 
     this.setListeners();
+    this.initDatePicker();
   }
 
   setListeners() {
@@ -110,6 +115,14 @@ export default class TaskEdit extends AbstractComponent {
       });
   }
 
+  initDatePicker() {
+    flatpickr(this.getElement().querySelector('.card__date'), {
+      altInput: true,
+      altFormat: "F j, Y",
+      dateFormat: "Y-m-d",
+    });
+  }
+
   _getTagTemplate(tag) {
     return `<span class="card__hashtag-inner">
                           <input
@@ -169,7 +182,7 @@ export default class TaskEdit extends AbstractComponent {
                             type="text"
                             placeholder="23 September"
                             name="date"
-                            ${this._dueDate ? `value="` + new Date(this._dueDate).toDateString() + `"` : ``}
+                            ${this._dueDate ? `value="` + flatpickr.formatDate(this._dueDate, "Y-m-d") + `"` : ``}
                           />
                         </label>
                       </fieldset>

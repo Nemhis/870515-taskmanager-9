@@ -6,7 +6,8 @@ export const colors = [
   `pink`,
 ];
 
-export const createTask = () => ({
+export const createTask = (value, index) => ({
+  id: (index + 1),
   description: [`Изучить теорию`, `Сделать домашку`, `Пройти интенсив на соточку`][Math.floor(Math.random() * 3)],
   dueDate: Date.now() + Math.pow(-1, Math.floor(Math.random() * 3)) + Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000, // +- неделя
   repeatingDays: {

@@ -27,7 +27,6 @@ export default class TaskController {
     };
 
     const saveFormHandler = () => {
-      debugger;
       document.removeEventListener(`keydown`, onEscKeyDown);
       this._onDataChange(this._collectFormData(), this._data.id);
     };

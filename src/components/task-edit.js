@@ -72,7 +72,9 @@ export default class TaskEdit extends AbstractComponent {
     element.addEventListener(`click`, (event) => {
       const colorLabel = event.target;
 
-      if (!colorLabel.classList.contains(`card__color`)) return;
+      if (!colorLabel.classList.contains(`card__color`)) {
+        return;
+      }
 
       element.classList.remove(`card--${this._color}`);
       this._color = element.querySelector(`#${colorLabel.getAttribute(`for`)}`).value;
@@ -83,7 +85,9 @@ export default class TaskEdit extends AbstractComponent {
     element.addEventListener(`click`, (event) => {
       const clearTagBtn = event.target;
 
-      if (!clearTagBtn.classList.contains(`card__hashtag-delete`)) return;
+      if (!clearTagBtn.classList.contains(`card__hashtag-delete`)) {
+        return;
+      }
 
       const tagInput = clearTagBtn.parentNode.querySelector(`.card__hashtag-hidden-input`);
       this._tags.delete(tagInput.value);
@@ -93,7 +97,9 @@ export default class TaskEdit extends AbstractComponent {
     const hashTagTextInput = element.querySelector(`.card__hashtag-input`);
 
     const onEnter = (event) => {
-      if (!isEnterBtn(event.key)) return;
+      if (!isEnterBtn(event.key)) {
+        return;
+      }
 
       let newTag = String(hashTagTextInput.value).trim();
 

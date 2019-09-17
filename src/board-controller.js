@@ -62,7 +62,8 @@ export default class BoardController {
   }
 
   _onDataChange(newData, id) {
-    this._tasks[this._tasks.findIndex((it) => it.id === id)] = newData;
+    const index = this._tasks.findIndex((it) => it.id === id);
+    this._tasks[index] = newData;
     this._renderBoard();
   }
 

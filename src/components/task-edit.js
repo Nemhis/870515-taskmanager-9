@@ -1,6 +1,10 @@
-import {colors} from "../data.js";
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/themes/light.css';
+
 import AbstractComponent from "./abstract-component";
-import {isEnterBtn, render, Position} from "../utils";
+
+import {colors} from "../data.js";
+import {isEnterBtn} from "../utils";
 
 export default class TaskEdit extends AbstractComponent {
   constructor({description, dueDate, tags, color, repeatingDays}) {
@@ -14,6 +18,7 @@ export default class TaskEdit extends AbstractComponent {
     this._isRepeat = Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]);
 
     this.setListeners();
+    this.initDatePicker();
   }
 
   setListeners() {
@@ -21,25 +26,25 @@ export default class TaskEdit extends AbstractComponent {
 
     // Date
     element
-      .querySelector('.card__date-deadline-toggle')
-      .addEventListener('click', () => {
+      .querySelector(`.card__date-deadline-toggle`)
+      .addEventListener(`click`, () => {
         this._dueDate = this._dueDate ? null : new Date();
-        const statusEl = element.querySelector('.card__date-status');
+        const statusEl = element.querySelector(`.card__date-status`);
         statusEl.firstChild.remove();
         statusEl.append(this._dueDate ? `yes` : `no`);
 
         if (this._dueDate) {
-          element.querySelector('.card__date-deadline').removeAttribute(`disabled`);
+          element.querySelector(`.card__date-deadline`).removeAttribute(`disabled`);
         } else {
-          element.querySelector('.card__date-deadline').setAttribute(`disabled`, `disabled`);
-          element.querySelector('.card__date').setAttribute(`value`, new Date().toDateString());
+          element.querySelector(`.card__date-deadline`).setAttribute(`disabled`, `disabled`);
+          element.querySelector(`.card__date`).setAttribute(`value`, new Date().toDateString());
         }
       });
 
     // Repeat
     element
       .querySelector(`.card__repeat-toggle`)
-      .addEventListener('click', () => {
+      .addEventListener(`click`, () => {
         this._isRepeat = !this._isRepeat;
         const statusEl = element.querySelector(`.card__repeat-status`);
         statusEl.firstChild.remove();
@@ -55,7 +60,7 @@ export default class TaskEdit extends AbstractComponent {
 
         Array.from(fieldset.querySelectorAll(`.card__repeat-day-input`))
           .forEach((input) => {
-            input.removeAttribute('checked');
+            input.removeAttribute(`checked`);
           });
 
         Object.keys(this._repeatingDays).forEach((day) => {
@@ -67,7 +72,9 @@ export default class TaskEdit extends AbstractComponent {
     element.addEventListener(`click`, (event) => {
       const colorLabel = event.target;
 
-      if (!colorLabel.classList.contains(`card__color`)) return;
+      if (!colorLabel.classList.contains(`card__color`)) {
+        return;
+      }
 
       element.classList.remove(`card--${this._color}`);
       this._color = element.querySelector(`#${colorLabel.getAttribute(`for`)}`).value;
@@ -78,7 +85,9 @@ export default class TaskEdit extends AbstractComponent {
     element.addEventListener(`click`, (event) => {
       const clearTagBtn = event.target;
 
-      if (!clearTagBtn.classList.contains(`card__hashtag-delete`)) return;
+      if (!clearTagBtn.classList.contains(`card__hashtag-delete`)) {
+        return;
+      }
 
       const tagInput = clearTagBtn.parentNode.querySelector(`.card__hashtag-hidden-input`);
       this._tags.delete(tagInput.value);
@@ -88,7 +97,9 @@ export default class TaskEdit extends AbstractComponent {
     const hashTagTextInput = element.querySelector(`.card__hashtag-input`);
 
     const onEnter = (event) => {
-      if (!isEnterBtn(event.key)) return;
+      if (!isEnterBtn(event.key)) {
+        return;
+      }
 
       let newTag = String(hashTagTextInput.value).trim();
 
@@ -108,6 +119,14 @@ export default class TaskEdit extends AbstractComponent {
       .addEventListener(`blur`, () => {
         document.removeEventListener(`keydown`, onEnter);
       });
+  }
+
+  initDatePicker() {
+    flatpickr(this.getElement().querySelector(`.card__date`), {
+      altInput: true,
+      altFormat: `F j, Y`,
+      dateFormat: `Y-m-d`,
+    });
   }
 
   _getTagTemplate(tag) {
@@ -169,7 +188,7 @@ export default class TaskEdit extends AbstractComponent {
                             type="text"
                             placeholder="23 September"
                             name="date"
-                            ${this._dueDate ? `value="` + new Date(this._dueDate).toDateString() + `"` : ``}
+                            ${this._dueDate ? `value="` + flatpickr.formatDate(this._dueDate, `Y-m-d`) + `"` : ``}
                           />
                         </label>
                       </fieldset>
@@ -182,7 +201,7 @@ export default class TaskEdit extends AbstractComponent {
                       <fieldset class="card__repeat-days" ${this._isRepeat ? `` : `disabled`}>
                         <div class="card__repeat-days-inner">
                         ${Object.keys(this._repeatingDays).map((day) =>
-      `<input
+    `<input
                             class="visually-hidden card__repeat-day-input"
                             type="checkbox"
                             id="repeat-${day}-1"
@@ -214,7 +233,7 @@ export default class TaskEdit extends AbstractComponent {
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
                       ${colors.map((existedColor) =>
-      `<input
+    `<input
                           type="radio"
                           id="color-${existedColor}-1"
                           class="card__color-input card__color-input--${existedColor} visually-hidden"

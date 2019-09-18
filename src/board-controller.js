@@ -2,14 +2,8 @@ import Board from './components/board.js';
 import TaskList from './components/task-list.js';
 
 import {Position, render, unrender} from './utils';
-import Menu from './components/menu';
-import Search from './components/search';
-import Filter from './components/filter';
-import LoadButton from './components/load-button';
 import TaskController from './task-controller';
 import Sort from './components/sort';
-
-import {createFilters} from './data';
 
 export default class BoardController {
   constructor(container, tasks) {
@@ -62,7 +56,8 @@ export default class BoardController {
   }
 
   _onDataChange(newData, id) {
-    this._tasks[this._tasks.findIndex((it) => it.id === id)] = newData;
+    const index = this._tasks.findIndex((it) => it.id === id);
+    this._tasks[index] = newData;
     this._renderBoard();
   }
 

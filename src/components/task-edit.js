@@ -26,25 +26,25 @@ export default class TaskEdit extends AbstractComponent {
 
     // Date
     element
-      .querySelector('.card__date-deadline-toggle')
-      .addEventListener('click', () => {
+      .querySelector(`.card__date-deadline-toggle`)
+      .addEventListener(`click`, () => {
         this._dueDate = this._dueDate ? null : new Date();
-        const statusEl = element.querySelector('.card__date-status');
+        const statusEl = element.querySelector(`.card__date-status`);
         statusEl.firstChild.remove();
         statusEl.append(this._dueDate ? `yes` : `no`);
 
         if (this._dueDate) {
-          element.querySelector('.card__date-deadline').removeAttribute(`disabled`);
+          element.querySelector(`.card__date-deadline`).removeAttribute(`disabled`);
         } else {
-          element.querySelector('.card__date-deadline').setAttribute(`disabled`, `disabled`);
-          element.querySelector('.card__date').setAttribute(`value`, new Date().toDateString());
+          element.querySelector(`.card__date-deadline`).setAttribute(`disabled`, `disabled`);
+          element.querySelector(`.card__date`).setAttribute(`value`, new Date().toDateString());
         }
       });
 
     // Repeat
     element
       .querySelector(`.card__repeat-toggle`)
-      .addEventListener('click', () => {
+      .addEventListener(`click`, () => {
         this._isRepeat = !this._isRepeat;
         const statusEl = element.querySelector(`.card__repeat-status`);
         statusEl.firstChild.remove();
@@ -60,7 +60,7 @@ export default class TaskEdit extends AbstractComponent {
 
         Array.from(fieldset.querySelectorAll(`.card__repeat-day-input`))
           .forEach((input) => {
-            input.removeAttribute('checked');
+            input.removeAttribute(`checked`);
           });
 
         Object.keys(this._repeatingDays).forEach((day) => {
@@ -122,10 +122,10 @@ export default class TaskEdit extends AbstractComponent {
   }
 
   initDatePicker() {
-    flatpickr(this.getElement().querySelector('.card__date'), {
+    flatpickr(this.getElement().querySelector(`.card__date`), {
       altInput: true,
-      altFormat: "F j, Y",
-      dateFormat: "Y-m-d",
+      altFormat: `F j, Y`,
+      dateFormat: `Y-m-d`,
     });
   }
 
@@ -188,7 +188,7 @@ export default class TaskEdit extends AbstractComponent {
                             type="text"
                             placeholder="23 September"
                             name="date"
-                            ${this._dueDate ? `value="` + flatpickr.formatDate(this._dueDate, "Y-m-d") + `"` : ``}
+                            ${this._dueDate ? `value="` + flatpickr.formatDate(this._dueDate, `Y-m-d`) + `"` : ``}
                           />
                         </label>
                       </fieldset>
@@ -201,7 +201,7 @@ export default class TaskEdit extends AbstractComponent {
                       <fieldset class="card__repeat-days" ${this._isRepeat ? `` : `disabled`}>
                         <div class="card__repeat-days-inner">
                         ${Object.keys(this._repeatingDays).map((day) =>
-      `<input
+    `<input
                             class="visually-hidden card__repeat-day-input"
                             type="checkbox"
                             id="repeat-${day}-1"
@@ -233,7 +233,7 @@ export default class TaskEdit extends AbstractComponent {
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
                       ${colors.map((existedColor) =>
-      `<input
+    `<input
                           type="radio"
                           id="color-${existedColor}-1"
                           class="card__color-input card__color-input--${existedColor} visually-hidden"

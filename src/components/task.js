@@ -1,4 +1,5 @@
 import AbstractComponent from './abstract-component';
+import moment from 'moment';
 
 export default class Task extends AbstractComponent {
   constructor({description, dueDate, tags, color, repeatingDays}) {

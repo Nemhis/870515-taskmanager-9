@@ -38,8 +38,8 @@ export default class BoardController {
 
   _renderBoard() {
     unrender(this._taskList.getElement());
-
     this._taskList.removeElement();
+
     render(this._board.getElement(), this._taskList.getElement(), Position.BEFOREEND);
     this._tasks.slice(0, 8).forEach((taskMock) => this._renderTask(taskMock));
   }
@@ -57,7 +57,13 @@ export default class BoardController {
 
   _onDataChange(newData, id) {
     const index = this._tasks.findIndex((it) => it.id === id);
-    this._tasks[index] = newData;
+
+    if (newData === null) {
+      this._tasks = [...this._tasks.slice(0, index), ...this._tasks.slice(index + 1)];
+    } else {
+      this._tasks[index] = newData;
+    }
+
     this._renderBoard();
   }
 

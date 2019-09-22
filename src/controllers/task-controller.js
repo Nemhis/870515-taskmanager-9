@@ -95,6 +95,11 @@ export default class TaskController {
         submitButton.addEventListener(`click`, saveFormHandler);
       });
 
+    this._taskEdit.getElement().querySelector(`.card__delete`)
+      .addEventListener(`click`, () => {
+        this._onDataChange(null, this._data.id);
+      });
+
     render(this._container, this._task.getElement(), Position.BEFOREEND);
   }
 

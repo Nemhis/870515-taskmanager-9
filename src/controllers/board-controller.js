@@ -1,7 +1,7 @@
 import Board from '../components/board.js';
 import TaskList from '../components/task-list.js';
 
-import {Position, render, unrender} from '../utils';
+import {hideVisually, Position, render, showVisually, unrender} from '../utils';
 import TaskController from './task-controller';
 import Sort from '../components/sort';
 
@@ -90,5 +90,13 @@ export default class BoardController {
     }
 
     this._renderBoard();
+  }
+
+  show() {
+    showVisually(this._board.getElement());
+  }
+
+  hide() {
+    hideVisually(this._board.getElement());
   }
 }

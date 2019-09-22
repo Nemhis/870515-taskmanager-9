@@ -1,6 +1,6 @@
-import Task from "./components/task";
-import TaskEdit from "./components/task-edit";
-import {isEscBtn, Position, render} from "./utils";
+import Task from "../components/task";
+import TaskEdit from "../components/task-edit";
+import {isEscBtn, Position, render} from "../utils";
 
 export default class TaskController {
   constructor(container, data, onDataChange, onChangeView) {
@@ -77,7 +77,7 @@ export default class TaskController {
 
     const submitButton = this._taskEdit.getElement().querySelector(`.card__save`);
     const form = this._taskEdit.getElement().querySelector(`.card__form`);
-    form.addEventListener(`submit`, (evt) => {evt.preventDefault();});
+    form.addEventListener(`submit`, (evt) => evt.preventDefault());
     submitButton.addEventListener(`click`, saveFormHandler);
     form.addEventListener(`submit`, saveFormHandler);
 
@@ -86,7 +86,7 @@ export default class TaskController {
       .addEventListener(`focus`, () => {
         form.removeEventListener(`submit`, saveFormHandler);
         submitButton.removeEventListener(`click`, saveFormHandler);
-    });
+      });
 
     form
       .querySelector(`.card__hashtag-input`)
@@ -96,7 +96,7 @@ export default class TaskController {
       });
 
     render(this._container, this._task.getElement(), Position.BEFOREEND);
-  };
+  }
 
   _collectFormData() {
     const formData = new FormData(this._taskEdit.getElement().querySelector(`.card__form`));

@@ -1,4 +1,4 @@
-import BoardController from "./board-controller";
+import BoardController from "./controllers/board-controller";
 import Filter from "./components/filter";
 import Menu from "./components/menu";
 import Search from "./components/search";

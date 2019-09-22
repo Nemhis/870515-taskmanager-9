@@ -1,9 +1,9 @@
-import Board from './components/board.js';
-import TaskList from './components/task-list.js';
+import Board from '../components/board.js';
+import TaskList from '../components/task-list.js';
 
-import {Position, render, unrender} from './utils';
+import {Position, render, unrender} from '../utils';
 import TaskController from './task-controller';
-import Sort from './components/sort';
+import Sort from '../components/sort';
 
 export default class BoardController {
   constructor(container, tasks) {
@@ -33,7 +33,7 @@ export default class BoardController {
     // document.querySelector('.load-more').addEventListener('click', (event) => this._onLoadMoreClick(event));
 
     this._sort.getElement()
-      .addEventListener(`click`, (evt) => this._onSortLinkClick(evt))
+      .addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
   }
 
   _renderBoard() {
@@ -46,10 +46,10 @@ export default class BoardController {
 
   _renderTask(task) {
     const taskController = new TaskController(
-      this._taskList.getElement(),
-      task,
-      this._onDataChange.bind(this),
-      this._onChangeView.bind(this)
+        this._taskList.getElement(),
+        task,
+        this._onDataChange.bind(this),
+        this._onChangeView.bind(this)
     );
 
     this._subscriptions.push(taskController.setDefaultView.bind(taskController));

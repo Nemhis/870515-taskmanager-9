@@ -24,7 +24,7 @@ render(mainContainer, (new Search()).getElement(), Position.BEFOREEND);
 // FILTER
 render(mainContainer, (new Filter(createFilters(taskMocks.slice(0, 8)))).getElement(), Position.BEFOREEND);
 
-const boardController = new BoardController(mainContainer, taskMocks.slice(0, 8));
+const boardController = new BoardController(mainContainer, taskMocks);
 boardController.init();
 
 const statistic = new Statistic();
@@ -46,6 +46,10 @@ menu.getElement().addEventListener(`change`, (evt) => {
     case `control__statistic`:
       showVisually(statistic.getElement());
       boardController.hide();
+      break;
+    case `control__new-task`:
+      menu.getElement().querySelector(`#control__task`).checked = true;
+      boardController.createTask();
       break;
   }
 });

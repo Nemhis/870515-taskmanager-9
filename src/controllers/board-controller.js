@@ -2,7 +2,7 @@ import Board from '../components/board.js';
 import TaskList from '../components/task-list.js';
 import LoadButton from "../components/load-button";
 import Sort from '../components/sort';
-import TaskController, {MODE as TaskControllerMode} from './task-controller';
+import TaskListController from "./task-list-controller";
 
 import {hideVisually, Position, render, showVisually, unrender} from '../utils';
 
@@ -15,10 +15,9 @@ export default class BoardController {
     this._board = new Board();
     this._sort = new Sort();
     this._taskList = new TaskList();
-    this._loadMoreButton = null;
-    this._subscriptions = [];
-    this._creatingTask = null;
 
+    this._loadMoreButton = null;
+    this._taskListController = new TaskListController(this._taskList.getElement(), this._onDataChange.bind(this));
     this._currentTasksCount = ITEMS_ON_BORD;
   }
 
@@ -33,8 +32,7 @@ export default class BoardController {
     this._renderBoard();
     this._updateLoadMoreButton();
 
-    this._sort.getElement()
-      .addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
+    this._sort.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
   }
 
   _unrenderBord() {
@@ -43,9 +41,7 @@ export default class BoardController {
   }
 
   _renderBoard() {
-    this._tasks
-      .slice(0, this._currentTasksCount)
-      .forEach((taskMock) => this._renderTask(taskMock));
+    this._taskListController.setTasks(this._tasks.slice(0, this._currentTasksCount));
   }
 
   _reRenderBoard() {
@@ -53,44 +49,6 @@ export default class BoardController {
     render(this._board.getElement(), this._taskList.getElement(), Position.BEFOREEND);
     this._renderBoard();
     this._updateLoadMoreButton();
-  }
-
-  _renderTask(task) {
-    const taskController = new TaskController(
-      this._taskList.getElement(),
-      task,
-      TaskControllerMode.VIEW,
-      this._onDataChange.bind(this),
-      this._onChangeView.bind(this)
-    );
-
-    this._subscriptions.push(taskController.setDefaultView.bind(taskController));
-  }
-
-  _onDataChange(newData, id) {
-    const index = this._tasks.findIndex((it) => it.id === id);
-
-    if (newData === null && id === null) { // выход из режима создания
-      this._creatingTask = null;
-    } else if (newData !== null && id === null) { // создание
-      this._tasks = [newData, ...this._tasks];
-      this._creatingTask = null;
-    } else if (newData === null) { // удаление
-      this._tasks = [...this._tasks.slice(0, index), ...this._tasks.slice(index + 1)];
-    } else { // обновление
-      this._tasks[index] = newData;
-    }
-
-    this._reRenderBoard();
-  }
-
-  _onChangeView() {
-    this._subscriptions.forEach((it) => it());
-  }
-
-  _onLoadMoreClick() {
-    this._currentTasksCount += ITEMS_ON_BORD;
-    this._reRenderBoard();
   }
 
   _onSortLinkClick(evt) {
@@ -115,36 +73,17 @@ export default class BoardController {
     this._reRenderBoard();
   }
 
+  _onDataChange(tasks) {
+    this._tasks = [...tasks, ...this._tasks];
+    this._renderBoard();
+  }
+
   show() {
     showVisually(this._board.getElement());
   }
 
   hide() {
     hideVisually(this._board.getElement());
-  }
-
-  createTask() {
-    if (this._creatingTask !== null) {
-      return;
-    }
-
-    const defaultTask = {
-      description: ``,
-      dueDate: new Date(),
-      tags: new Set(),
-      color: [],
-      repeatingDays: {},
-      isFavorite: false,
-      isArchive: false,
-    };
-
-    this._creatingTask = new TaskController(
-      this._taskList.getElement(),
-      defaultTask,
-      TaskControllerMode.ADDING,
-      this._onDataChange.bind(this),
-      this._onChangeView.bind(this)
-    );
   }
 
   /**
@@ -171,5 +110,10 @@ export default class BoardController {
   _unrenderLoadMoreButton() {
     unrender(this._loadMoreButton.getElement());
     this._loadMoreButton.removeElement();
+  }
+
+  _onLoadMoreClick() {
+    this._currentTasksCount += ITEMS_ON_BORD;
+    this._reRenderBoard();
   }
 }

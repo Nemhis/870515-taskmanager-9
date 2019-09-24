@@ -1,4 +1,6 @@
 import BoardController from './controllers/board-controller';
+import SearchController from './controllers/search-controller';
+
 import Filter from './components/filter';
 import Menu from './components/menu';
 import Search from './components/search';
@@ -19,17 +21,32 @@ const menu = new Menu();
 render(mainContainer.querySelector(`.main__control`), menu.getElement(), Position.BEFOREEND);
 
 // SEARCH
-render(mainContainer, (new Search()).getElement(), Position.BEFOREEND);
+const search = new Search();
+render(mainContainer, search.getElement(), Position.BEFOREEND);
 
 // FILTER
 render(mainContainer, (new Filter(createFilters(taskMocks.slice(0, 8)))).getElement(), Position.BEFOREEND);
 
-const boardController = new BoardController(mainContainer);
-boardController.show(taskMocks);
-
 const statistic = new Statistic();
 hideVisually(statistic.getElement());
+const boardController = new BoardController(mainContainer);
+
+const onSearchBackButtonClick = () => {
+  hideVisually(statistic.getElement());
+  searchController.hide();
+  boardController.show(taskMocks);
+};
+
+const searchController = new SearchController(mainContainer, search, onSearchBackButtonClick);
+
+boardController.show(taskMocks);
 render(mainContainer, statistic.getElement(), Position.BEFOREEND);
+
+search.getElement().addEventListener(`click`, () => {
+  hideVisually(statistic.getElement());
+  boardController.hide();
+  searchController.show(taskMocks);
+});
 
 menu.getElement().addEventListener(`change`, (evt) => {
   evt.preventDefault();
@@ -53,3 +70,4 @@ menu.getElement().addEventListener(`change`, (evt) => {
       break;
   }
 });
+

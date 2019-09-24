@@ -58,7 +58,7 @@ menu.getElement().addEventListener(`change`, (evt) => {
     case `control__task`:
       statisticController.hide();
       searchController.hide();
-      boardController.show();
+      boardController.show(taskMocks);
       break;
     case `control__statistic`:
       searchController.hide();

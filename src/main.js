@@ -8,6 +8,7 @@ import Statistic from './components/statistic';
 
 import {hideVisually, Position, render, showVisually} from './utils';
 import {createTask, createFilters} from './data.js';
+import StatisticController from "./controllers/statistic-controller";
 
 const CARD_LIST_LENGTH = 16;
 const taskMocks = new Array(CARD_LIST_LENGTH)
@@ -27,12 +28,11 @@ render(mainContainer, search.getElement(), Position.BEFOREEND);
 // FILTER
 render(mainContainer, (new Filter(createFilters(taskMocks.slice(0, 8)))).getElement(), Position.BEFOREEND);
 
-const statistic = new Statistic();
-hideVisually(statistic.getElement());
+const statisticController = new StatisticController(mainContainer);
 const boardController = new BoardController(mainContainer);
 
 const onSearchBackButtonClick = () => {
-  hideVisually(statistic.getElement());
+  statisticController.hide();
   searchController.hide();
   boardController.show(taskMocks);
 };
@@ -40,10 +40,9 @@ const onSearchBackButtonClick = () => {
 const searchController = new SearchController(mainContainer, search, onSearchBackButtonClick);
 
 boardController.show(taskMocks);
-render(mainContainer, statistic.getElement(), Position.BEFOREEND);
 
 search.getElement().addEventListener(`click`, () => {
-  hideVisually(statistic.getElement());
+  statisticController.hide();
   boardController.hide();
   searchController.show(taskMocks);
 });
@@ -57,14 +56,19 @@ menu.getElement().addEventListener(`change`, (evt) => {
 
   switch (evt.target.id) {
     case `control__task`:
-      hideVisually(statistic.getElement());
+      statisticController.hide();
+      searchController.hide();
       boardController.show();
       break;
     case `control__statistic`:
-      showVisually(statistic.getElement());
+      searchController.hide();
       boardController.hide();
+      statisticController.show();
       break;
     case `control__new-task`:
+      statisticController.hide();
+      searchController.hide();
+      boardController.show(taskMocks);
       menu.getElement().querySelector(`#control__task`).checked = true;
       boardController.createTask();
       break;

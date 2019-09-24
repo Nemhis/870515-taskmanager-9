@@ -24,8 +24,8 @@ render(mainContainer, (new Search()).getElement(), Position.BEFOREEND);
 // FILTER
 render(mainContainer, (new Filter(createFilters(taskMocks.slice(0, 8)))).getElement(), Position.BEFOREEND);
 
-const boardController = new BoardController(mainContainer, taskMocks);
-boardController.init();
+const boardController = new BoardController(mainContainer);
+boardController.show(taskMocks);
 
 const statistic = new Statistic();
 hideVisually(statistic.getElement());

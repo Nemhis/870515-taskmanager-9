@@ -9,46 +9,42 @@ import {hideVisually, Position, render, showVisually, unrender} from '../utils';
 const ITEMS_ON_BORD = 8;
 
 export default class BoardController {
-  constructor(container, tasks) {
+  constructor(container) {
     this._container = container;
-    this._tasks = tasks;
     this._board = new Board();
     this._sort = new Sort();
     this._taskList = new TaskList();
 
-    this._loadMoreButton = null;
+    this._loadMoreButton = new LoadButton();
     this._taskListController = new TaskListController(this._taskList.getElement(), this._onDataChange.bind(this));
-    this._currentTasksCount = ITEMS_ON_BORD;
+    this._init();
   }
 
-  init() {
+  _init() {
     // TASK BOARD
     render(this._container, this._board.getElement(), Position.BEFOREEND);
     // SORT
     render(this._board.getElement(), this._sort.getElement(), Position.BEFOREEND);
     // TASK LIST
     render(this._board.getElement(), this._taskList.getElement(), Position.BEFOREEND);
-    // TASK
-    this._renderBoard();
-    this._updateLoadMoreButton();
 
     this._sort.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
   }
 
-  _unrenderBord() {
-    unrender(this._taskList.getElement());
-    this._taskList.removeElement();
-  }
-
   _renderBoard() {
-    this._taskListController.setTasks(this._tasks.slice(0, this._currentTasksCount));
-  }
-
-  _reRenderBoard() {
-    this._unrenderBord();
     render(this._board.getElement(), this._taskList.getElement(), Position.BEFOREEND);
-    this._renderBoard();
-    this._updateLoadMoreButton();
+
+    unrender(this._loadMoreButton.getElement());
+    this._loadMoreButton.removeElement();
+
+    if (this._currentTasksCount < this._tasks.length) {
+      render(this._board.getElement(), this._loadMoreButton.getElement(), Position.BEFOREEND);
+    }
+
+    this._taskListController.setTasks(this._tasks.slice(0, this._currentTasksCount));
+
+    this._loadMoreButton.getElement()
+      .addEventListener(`click`, () => this._onLoadMoreClick());
   }
 
   _onSortLinkClick(evt) {
@@ -60,25 +56,36 @@ export default class BoardController {
 
     switch (evt.target.dataset.sortType) {
       case `date-up`:
-        this._tasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+        const sortedByDateUpTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+        this._taskListController.setTasks(sortedByDateUpTasks);
         break;
       case `date-down`:
-        this._tasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+        const sortedByDateDownTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+        this._taskListController.setTasks(sortedByDateDownTasks);
         break;
       case `default`:
-        this._tasks.forEach((taskMock) => this._renderTask(taskMock));
+        this._taskListController.setTasks(this._tasks);
         break;
     }
-
-    this._reRenderBoard();
   }
 
   _onDataChange(tasks) {
-    this._tasks = [...tasks, ...this._tasks];
+    this._tasks = [...tasks, ...this._tasks.slice(this._currentTasksCount)];
     this._renderBoard();
   }
 
-  show() {
+  _setTasks(tasks) {
+    this._tasks = tasks;
+    this._currentTasksCount = ITEMS_ON_BORD;
+
+    this._renderBoard();
+  }
+
+  show(tasks) {
+    if (tasks !== this._tasks) {
+      this._setTasks(tasks);
+    }
+
     showVisually(this._board.getElement());
   }
 
@@ -86,34 +93,17 @@ export default class BoardController {
     hideVisually(this._board.getElement());
   }
 
-  /**
-   * Вычисляем необходимость отрисовки кнопки загрузки
-   *
-   * @private
-   */
-  _updateLoadMoreButton() {
-    if (this._currentTasksCount === this._tasks.length) {
-      if (this._loadMoreButton) {
-        this._unrenderLoadMoreButton();
-      }
-    } else {
-      this._renderLoadMoreButton();
-    }
-  }
-
-  _renderLoadMoreButton() {
-    this._loadMoreButton = new LoadButton();
-    render(this._board.getElement(), this._loadMoreButton.getElement(), Position.BEFOREEND);
-    document.querySelector('.load-more').addEventListener('click', (event) => this._onLoadMoreClick(event));
-  }
-
-  _unrenderLoadMoreButton() {
-    unrender(this._loadMoreButton.getElement());
-    this._loadMoreButton.removeElement();
+  createTask() {
+    this._taskListController.createTask();
   }
 
   _onLoadMoreClick() {
+    this._taskListController.addTasks(this._tasks.slice(this._currentTasksCount, this._currentTasksCount + ITEMS_ON_BORD));
     this._currentTasksCount += ITEMS_ON_BORD;
-    this._reRenderBoard();
+
+    if (this._currentTasksCount >= this._tasks.length) {
+      unrender(this._loadMoreButton.getElement());
+      this._loadMoreButton.removeElement();
+    }
   }
 }

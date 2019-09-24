@@ -1,10 +1,10 @@
 import TaskController, {MODE as TaskControllerMode} from './task-controller';
 
 export default class TaskListController {
-  constructor(container, tasks, onDataChange) {
+  constructor(container, onDataChange) {
     this._onDataChangeMain = onDataChange;
     this._container = container;
-    this._tasks = tasks;
+    this._tasks = [];
     this._subscriptions = [];
     this._creatingTask = null;
   }

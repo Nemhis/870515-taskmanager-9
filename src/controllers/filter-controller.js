@@ -26,7 +26,7 @@ export default class FilterController {
         const target = event.target;
 
         this._onFilterChange(this._filterTasks(target.dataset.filterName, this._tasks));
-      })
+      });
     });
   }
 
@@ -63,17 +63,17 @@ export default class FilterController {
           const dueDate = new Date(task.dueDate);
 
           return today.toDateString() === dueDate.toDateString();
-        })
+        });
       },
       'favorites': (tasks) => tasks.filter((task) =>
         Object
           .keys(task.repeatingDays)
-          .some(day => task.repeatingDays[day])
+          .some((day) => task.repeatingDays[day])
       ),
       'repeating': (tasks) => tasks.filter((task) =>
         Object
           .keys(task.repeatingDays)
-          .some(day => task.repeatingDays[day])
+          .some((day) => task.repeatingDays[day])
       ),
       'tags': (tasks) => tasks.filter((task) => task.tags.size),
       'archive': (tasks) => tasks.filter((task) => task.isArchive),
@@ -91,5 +91,5 @@ export default class FilterController {
       title: filterName,
       count: this._filterTasks(filterName, tasks).length
     }));
-  };
+  }
 }

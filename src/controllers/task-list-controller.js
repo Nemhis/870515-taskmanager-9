@@ -24,11 +24,11 @@ export default class TaskListController {
 
   _renderTask(task) {
     const taskController = new TaskController(
-      this._container,
-      task,
-      TaskControllerMode.VIEW,
-      this._onDataChange.bind(this),
-      this._onChangeView.bind(this)
+        this._container,
+        task,
+        TaskControllerMode.VIEW,
+        this._onDataChange.bind(this),
+        this._onChangeView.bind(this)
     );
 
     this._subscriptions.push(taskController.setDefaultView.bind(taskController));
@@ -72,11 +72,11 @@ export default class TaskListController {
     };
 
     this._creatingTask = new TaskController(
-      this._container,
-      defaultTask,
-      TaskControllerMode.ADDING,
-      this._onDataChange.bind(this),
-      this._onChangeView.bind(this)
+        this._container,
+        defaultTask,
+        TaskControllerMode.ADDING,
+        this._onDataChange.bind(this),
+        this._onChangeView.bind(this)
     );
   }
 }

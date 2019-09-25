@@ -22,8 +22,8 @@ export default class SearchController {
     this._searchResultInfo = new SearchResultInfo({});
     this._searchResultGroup = new SearchResultGroup({});
     this._taskListController = new TaskListController(
-      this._searchResultGroup.getElement().querySelector(`.result__cards`),
-      this._onDataChange.bind(this),
+        this._searchResultGroup.getElement().querySelector(`.result__cards`),
+        this._onDataChange.bind(this)
     );
 
     this._init();

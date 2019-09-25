@@ -3,10 +3,10 @@ import flatpickr from 'flatpickr';
 import moment from 'moment';
 import Chart from 'chart.js';
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
-import { Tableau20 } from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
+import {Tableau20} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-import { hideVisually, Position, render, showVisually } from "../utils";
+import {hideVisually, Position, render, showVisually} from '../utils';
 
 export default class StatisticController {
   constructor(container) {
@@ -19,8 +19,8 @@ export default class StatisticController {
     this._datesDiagram = null;
 
     const today = moment();
-    this._startDate = today.startOf('week').toDate();
-    this._endDate = today.endOf('week').toDate();
+    this._startDate = today.startOf(`week`).toDate();
+    this._endDate = today.endOf(`week`).toDate();
 
     this._init();
   }
@@ -49,11 +49,11 @@ export default class StatisticController {
   }
 
   _initDatePicker() {
-    const dateInput = this._statistic.getElement().querySelector('.statistic__period-input');
+    const dateInput = this._statistic.getElement().querySelector(`.statistic__period-input`);
 
     flatpickr(dateInput, {
-      mode: "range",
-      dateFormat: "Y-m-d",
+      mode: `range`,
+      dateFormat: `Y-m-d`,
       defaultDate: [this._startDate, this._endDate],
       onChange: (selectedDates) => {
         if (selectedDates.length !== 2) {
@@ -61,11 +61,13 @@ export default class StatisticController {
         }
 
         [this._startDate, this._endDate] = selectedDates;
-        let minTimestamp = this._startDate.getTime(), maxTimestamp = this._endDate.getTime();
+        let minTimestamp = this._startDate.getTime();
+        let maxTimestamp = this._endDate.getTime();
+
         const tasks = this._tasks.filter((task) => task.dueDate >= minTimestamp && task.dueDate <= maxTimestamp);
 
         this._initCharts(tasks);
-      }
+      },
     });
   }
 
@@ -100,7 +102,8 @@ export default class StatisticController {
       });
     });
 
-    const data = [], labels = [];
+    const data = [];
+    const labels = [];
 
     allTags.forEach((count, tag) => {
       data.push(count);
@@ -111,29 +114,30 @@ export default class StatisticController {
       plugins: [ChartDataLabels],
       type: `pie`,
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          data: data,
-        }]
+          data,
+        }],
       },
       options: {
         plugins: {
           datalabels: {
-            display: false
+            display: false,
           },
           colorschemes: {
-            scheme: Tableau20
-          }
+            scheme: Tableau20,
+          },
         },
         tooltips: {
           callbacks: {
-            label: (tooltipItem, data) => {
-              const allData = data.datasets[tooltipItem.datasetIndex].data;
+            label: (tooltipItem, chartData) => {
+              const allData = chartData.datasets[tooltipItem.datasetIndex].data;
               const tooltipData = allData[tooltipItem.index];
               const total = allData.reduce((acc, it) => acc + parseFloat(it));
               const tooltipPercentage = Math.round((tooltipData / total) * 100);
+
               return `${tooltipData} TASKS — ${tooltipPercentage}%`;
-            }
+            },
           },
           displayColors: false,
           backgroundColor: `#ffffff`,
@@ -142,13 +146,13 @@ export default class StatisticController {
           borderWidth: 1,
           cornerRadius: 0,
           xPadding: 15,
-          yPadding: 15
+          yPadding: 15,
         },
         title: {
           display: true,
           text: `DONE BY: TAGS`,
           fontSize: 16,
-          fontColor: `#000000`
+          fontColor: `#000000`,
         },
         legend: {
           position: `left`,
@@ -157,10 +161,10 @@ export default class StatisticController {
             padding: 25,
             fontStyle: 500,
             fontColor: `#000000`,
-            fontSize: 13
-          }
-        }
-      }
+            fontSize: 13,
+          },
+        },
+      },
     });
   }
 
@@ -180,7 +184,9 @@ export default class StatisticController {
       allColors.set(task.color, count + 1);
     });
 
-    const data = [], labels = [], colors = [];
+    const data = [];
+    const labels = [];
+    const colors = [];
 
     allColors.forEach((count, color) => {
       data.push(count);
@@ -192,27 +198,27 @@ export default class StatisticController {
       plugins: [ChartDataLabels],
       type: `pie`,
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          data: data,
-          backgroundColor: colors
-        }]
+          data,
+          backgroundColor: colors,
+        }],
       },
       options: {
         plugins: {
           datalabels: {
-            display: false
-          }
+            display: false,
+          },
         },
         tooltips: {
           callbacks: {
-            label: (tooltipItem, data) => {
-              const allData = data.datasets[tooltipItem.datasetIndex].data;
+            label: (tooltipItem, chardData) => {
+              const allData = chardData.datasets[tooltipItem.datasetIndex].data;
               const tooltipData = allData[tooltipItem.index];
               const total = allData.reduce((acc, it) => acc + parseFloat(it));
               const tooltipPercentage = Math.round((tooltipData / total) * 100);
               return `${tooltipData} TASKS — ${tooltipPercentage}%`;
-            }
+            },
           },
           displayColors: false,
           backgroundColor: `#ffffff`,
@@ -221,13 +227,13 @@ export default class StatisticController {
           borderWidth: 1,
           cornerRadius: 0,
           xPadding: 15,
-          yPadding: 15
+          yPadding: 15,
         },
         title: {
           display: true,
           text: `DONE BY: TAGS`,
           fontSize: 16,
-          fontColor: `#000000`
+          fontColor: `#000000`,
         },
         legend: {
           position: `left`,
@@ -236,10 +242,10 @@ export default class StatisticController {
             padding: 25,
             fontStyle: 500,
             fontColor: `#000000`,
-            fontSize: 13
-          }
-        }
-      }
+            fontSize: 13,
+          },
+        },
+      },
     });
   }
 
@@ -277,13 +283,14 @@ export default class StatisticController {
       }
     });
 
-    const days = Array.from(daysMap).map(([key, value]) => {
-      return value;
+    const days = Array.from(daysMap).map(([, dateInfo]) => {
+      return dateInfo;
     });
 
     days.sort((a, b) => a.timestamp - b.timestamp);
 
-    const data = [], labels = [];
+    const data = [];
+    const labels = [];
 
     days.forEach(({timestamp, count}) => {
       data.push(count);
@@ -294,61 +301,61 @@ export default class StatisticController {
       plugins: [ChartDataLabels],
       type: `line`,
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          data: data,
+          data,
           backgroundColor: `transparent`,
           borderColor: `#000000`,
           borderWidth: 1,
           lineTension: 0,
           pointRadius: 8,
           pointHoverRadius: 8,
-          pointBackgroundColor: `#000000`
-        }]
+          pointBackgroundColor: `#000000`,
+        }],
       },
       options: {
         plugins: {
           datalabels: {
             font: {
-              size: 8
+              size: 8,
             },
-            color: `#ffffff`
-          }
+            color: `#ffffff`,
+          },
         },
         scales: {
           yAxes: [{
             ticks: {
-              beginAtZero:true,
-              display: false
+              beginAtZero: true,
+              display: false,
             },
             gridLines: {
               display: false,
-              drawBorder: false
-            }
+              drawBorder: false,
+            },
           }],
           xAxes: [{
             ticks: {
               fontStyle: `bold`,
-              fontColor: `#000000`
+              fontColor: `#000000`,
             },
             gridLines: {
               display: false,
-              drawBorder: false
-            }
-          }]
+              drawBorder: false,
+            },
+          }],
         },
         legend: {
-          display: false
+          display: false,
         },
         layout: {
           padding: {
-            top: 10
-          }
+            top: 10,
+          },
         },
         tooltips: {
-          enabled: false
-        }
-      }
+          enabled: false,
+        },
+      },
     });
   }
 }

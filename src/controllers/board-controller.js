@@ -9,11 +9,12 @@ import {hideVisually, Position, render, showVisually, unrender} from '../utils';
 const ITEMS_ON_BORD = 8;
 
 export default class BoardController {
-  constructor(container) {
+  constructor(container, onMainDataChange) {
     this._container = container;
     this._board = new Board();
     this._sort = new Sort();
     this._taskList = new TaskList();
+    this._onMainDataChange = onMainDataChange;
 
     this._loadMoreButton = new LoadButton();
     this._taskListController = new TaskListController(this._taskList.getElement(), this._onDataChange.bind(this));
@@ -72,6 +73,7 @@ export default class BoardController {
   _onDataChange(tasks) {
     this._tasks = [...tasks, ...this._tasks.slice(this._currentTasksCount)];
     this._renderBoard();
+    this._onMainDataChange(this._tasks);
   }
 
   _setTasks(tasks) {

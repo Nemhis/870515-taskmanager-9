@@ -28,20 +28,29 @@ const search = new Search();
 render(mainContainer, search.getElement(), Position.BEFOREEND);
 
 // FILTER
+const filterChangeSubscribers = [];
 const filterController = new FilterController(mainContainer, taskMocks, (tasks) => {
-  console.log(`filter change`, tasks);
+  filterChangeSubscribers.forEach((subscriber) => subscriber(tasks));
 });
 
 const statisticController = new StatisticController(mainContainer);
-const boardController = new BoardController(mainContainer);
+const boardController = new BoardController(mainContainer, filterController.updateFilter.bind(filterController));
 
-const onSearchBackButtonClick = () => {
+const showBoard = (tasks) => {
   statisticController.hide();
   searchController.hide();
-  boardController.show(taskMocks);
+  boardController.show(tasks);
 };
 
-const searchController = new SearchController(mainContainer, search, onSearchBackButtonClick);
+const onSearchBackButtonClick = () => {
+  showBoard(taskMocks);
+};
+
+filterChangeSubscribers.push((filteredTasks) => {
+  showBoard(filteredTasks);
+});
+
+const searchController = new SearchController(mainContainer, search, onSearchBackButtonClick, filterController.updateFilter.bind(filterController));
 
 boardController.show(taskMocks);
 

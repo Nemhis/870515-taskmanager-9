@@ -15,7 +15,10 @@ export default class FilterController {
   _init() {
     this._createFilterMap();
     this._renderFilter();
+    this._initEvents();
+  }
 
+  _initEvents() {
     const inputs = Array.from(this._filter.getElement().querySelectorAll(`.filter__input`));
 
     inputs.forEach((input) => {
@@ -37,10 +40,17 @@ export default class FilterController {
     this._filter.removeElement();
   }
 
+  _reRenderFilter() {
+    const newFilter = new Filter(this._createFilters(this._tasks));
+    this._container.replaceChild(newFilter.getElement(), this._filter.getElement());
+    this._unrenderFilter();
+    this._filter = newFilter;
+    this._initEvents();
+  }
+
   updateFilter(tasks) {
     this._tasks = tasks;
-    this._unrenderFilter();
-    this._init();
+    this._reRenderFilter();
   }
 
   _createFilterMap() {

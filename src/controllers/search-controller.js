@@ -10,10 +10,11 @@ import {render, unrender, Position, hideVisually, showVisually} from '../utils';
 const MIN_QUERY_LENGTH = 3;
 
 export default class SearchController {
-  constructor(container, search, onBackButtonClick) {
+  constructor(container, search, onBackButtonClick, onMainDataChange) {
     this._container = container;
     this._search = search;
     this._onBackButtonClick = onBackButtonClick;
+    this._onMainDataChange = onMainDataChange;
 
     this._tasks = [];
 
@@ -106,5 +107,6 @@ export default class SearchController {
 
   _onDataChange(tasks) {
     this._tasks = tasks;
+    this._onMainDataChange(this._tasks);
   }
 }

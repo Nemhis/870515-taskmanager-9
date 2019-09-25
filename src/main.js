@@ -9,6 +9,8 @@ import Statistic from './components/statistic';
 import {hideVisually, Position, render, showVisually} from './utils';
 import {createTask, createFilters} from './data.js';
 import StatisticController from "./controllers/statistic-controller";
+import FilterController from "./controllers/filter-controller";
+import task from "./components/task";
 
 const CARD_LIST_LENGTH = 16;
 const taskMocks = new Array(CARD_LIST_LENGTH)
@@ -26,7 +28,9 @@ const search = new Search();
 render(mainContainer, search.getElement(), Position.BEFOREEND);
 
 // FILTER
-render(mainContainer, (new Filter(createFilters(taskMocks.slice(0, 8)))).getElement(), Position.BEFOREEND);
+const filterController = new FilterController(mainContainer, taskMocks, (tasks) => {
+  console.log(`filter change`, tasks);
+});
 
 const statisticController = new StatisticController(mainContainer);
 const boardController = new BoardController(mainContainer);

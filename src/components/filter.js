@@ -1,9 +1,10 @@
 import AbstractComponent from './abstract-component';
 
 export default class Filter extends AbstractComponent {
-  constructor(filters) {
+  constructor(filters, activeFilter = `all`) {
     super();
     this._filters = filters;
+    this._activeFilter = activeFilter;
   }
 
   getTemplate() {
@@ -11,11 +12,13 @@ export default class Filter extends AbstractComponent {
         ${this._filters.map((filter) => `<input
           type="radio"
           id="filter__${filter.title}"
+          data-filter-name="${filter.title}"
           class="filter__input visually-hidden"
           name="filter"
-          ${filter.count !== 0 ? `checked` : `disabled`}
+          ${filter.count === 0 ? `disabled` : ``}
+          ${filter.title === this._activeFilter ? `checked` : ``}
         />
-        <label for="filter__all" class="filter__label">
+        <label for="filter__${filter.title}" class="filter__label">
           ${filter.title} <span class="filter__${filter.title}-count">${filter.count}</span></label
         >
         `).join(``)}

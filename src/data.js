@@ -32,49 +32,6 @@ export const createTask = (value, index) => ({
   isArchive: Boolean(Math.round(Math.random())),
 });
 
-export const createFilters = (tasks) => {
-  return [
-    {
-      title: `all`,
-      count: tasks.length,
-    },
-    {
-      title: `overdue`,
-      count: tasks.filter((task) => (Date.now() > task.dueDate)).length,
-    },
-    {
-      title: `today`,
-      count: tasks.filter((task) => {
-        const today = new Date();
-        const dueDate = new Date(task.dueDate);
-
-        return today.toDateString() === dueDate.toDateString();
-      }).length,
-    },
-    {
-      title: `favorites`,
-      count: tasks.filter((task) => task.isFavorite).length,
-    },
-    {
-      title: `repeating`,
-      count: tasks.filter((task) =>
-        Object
-          .keys(task.repeatingDays)
-          .some(day => task.repeatingDays[day])
-      ).length,
-    },
-    {
-      title: `tags`,
-      count: tasks.filter((task) => task.tags.size).length,
-    },
-    {
-      title: `archive`,
-      count: tasks.filter((task) => task.isArchive).length,
-    },
-  ];
-};
-
-
 function shuffleArray(array) {
   return array.sort(() => Math.random() - 0.5);
 }

@@ -18,6 +18,10 @@ export default class StatisticController {
     this._colorsDiagram = null;
     this._datesDiagram = null;
 
+    const today = moment();
+    this._startDate = today.startOf('week').toDate();
+    this._endDate = today.endOf('week').toDate();
+
     this._init();
   }
 
@@ -46,19 +50,18 @@ export default class StatisticController {
 
   _initDatePicker() {
     const dateInput = this._statistic.getElement().querySelector('.statistic__period-input');
-    const today = moment();
 
     flatpickr(dateInput, {
       mode: "range",
       dateFormat: "Y-m-d",
-      defaultDate: [today.startOf('week').toDate(), today.endOf('week').toDate()],
+      defaultDate: [this._startDate, this._endDate],
       onChange: (selectedDates) => {
         if (selectedDates.length !== 2) {
           return;
         }
 
-        let [minDate, maxDate] = selectedDates;
-        let minTimestamp = minDate.getTime(), maxTimestamp = maxDate.getTime();
+        [this._startDate, this._endDate] = selectedDates;
+        let minTimestamp = this._startDate.getTime(), maxTimestamp = this._endDate.getTime();
         const tasks = this._tasks.filter((task) => task.dueDate >= minTimestamp && task.dueDate <= maxTimestamp);
 
         this._initCharts(tasks);
@@ -70,6 +73,7 @@ export default class StatisticController {
     this._updateCount(tasks.length);
     this._initTagsDiagram(tasks);
     this._initColorsDiagram(tasks);
+    this._initDatesDiagram(tasks);
   }
 
   _updateCount(count) {
@@ -81,6 +85,10 @@ export default class StatisticController {
   _initTagsDiagram(tasks) {
     if (this._tagsDiagram) {
       this._tagsDiagram.destroy();
+    }
+
+    if (tasks.length === 0) {
+      return;
     }
 
     const allTags = new Map();
@@ -161,6 +169,10 @@ export default class StatisticController {
       this._colorsDiagram.destroy();
     }
 
+    if (tasks.length === 0) {
+      return;
+    }
+
     const allColors = new Map();
 
     tasks.forEach((task) => {
@@ -175,8 +187,6 @@ export default class StatisticController {
       colors.push(color);
       labels.push(`#${color}`);
     });
-
-    console.log(colors);
 
     this._colorsDiagram = new Chart(this._statistic.getElement().querySelector(`.statistic__colors`), {
       plugins: [ChartDataLabels],
@@ -228,6 +238,115 @@ export default class StatisticController {
             fontColor: `#000000`,
             fontSize: 13
           }
+        }
+      }
+    });
+  }
+
+  _initDatesDiagram(tasks) {
+    if (this._datesDiagram) {
+      this._datesDiagram.destroy();
+    }
+
+    if (tasks.length === 0) {
+      return;
+    }
+
+    const diff = moment(this._endDate).diff(this._startDate, `days`);
+
+    // К diff прибавляем день отсчёта diff, чтобы включить его в результирующий массив
+    const daysMock = (new Array(diff + 1)).fill(``);
+    const dateCounter = moment(this._startDate);
+    const daysMap = new Map();
+    const mapKeyFormat = `D-M-YYYY`;
+
+    daysMock.forEach(() => {
+      daysMap.set(dateCounter.format(mapKeyFormat), {
+        timestamp: dateCounter.valueOf(),
+        count: 0,
+      });
+      dateCounter.add(1, `days`);
+    });
+
+    tasks.forEach((task) => {
+      const date = moment(task.dueDate).format(mapKeyFormat);
+      const day = daysMap.get(date);
+
+      if (day) {
+        day.count += 1;
+      }
+    });
+
+    const days = Array.from(daysMap).map(([key, value]) => {
+      return value;
+    });
+
+    days.sort((a, b) => a.timestamp - b.timestamp);
+
+    const data = [], labels = [];
+
+    days.forEach(({timestamp, count}) => {
+      data.push(count);
+      labels.push(moment(timestamp).format(`DD MMM`).toUpperCase());
+    });
+
+    this._datesDiagram = new Chart(this._statistic.getElement().querySelector(`.statistic__days`), {
+      plugins: [ChartDataLabels],
+      type: `line`,
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: `transparent`,
+          borderColor: `#000000`,
+          borderWidth: 1,
+          lineTension: 0,
+          pointRadius: 8,
+          pointHoverRadius: 8,
+          pointBackgroundColor: `#000000`
+        }]
+      },
+      options: {
+        plugins: {
+          datalabels: {
+            font: {
+              size: 8
+            },
+            color: `#ffffff`
+          }
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true,
+              display: false
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false
+            }
+          }],
+          xAxes: [{
+            ticks: {
+              fontStyle: `bold`,
+              fontColor: `#000000`
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false
+            }
+          }]
+        },
+        legend: {
+          display: false
+        },
+        layout: {
+          padding: {
+            top: 10
+          }
+        },
+        tooltips: {
+          enabled: false
         }
       }
     });
